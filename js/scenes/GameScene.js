@@ -11,8 +11,8 @@ class GameScene extends Phaser.Scene {
     const W = this.game.config.width;
     const H = this.game.config.height;
 
-    // Background image (fills screen)
-    this.bgImage = this.add.image(W / 2, H / 2, 'bg_default');
+    // Background image (fills screen) — start with cottage
+    this.bgImage = this.add.image(W / 2, H / 2, 'bg-cottage');
     this.bgImage.setDisplaySize(W, H);
 
     // Character container
@@ -35,11 +35,13 @@ class GameScene extends Phaser.Scene {
       this.showCharacters(charArray);
     });
 
-    // Load initial scene from registry
-    const gameState = this.registry.get('gameState') || {};
-    if (gameState.currentScene) {
-      this.loadScene(gameState.currentScene, true);
+    // Initialize gameState and load first scene
+    let gameState = this.registry.get('gameState');
+    if (!gameState) {
+      gameState = window.createGameState ? window.createGameState() : { currentScene: 'ch1_s1', dialogueIndex: 0, chapter: 1, inventory: [], courage: 0, hp: 3, maxHp: 3, flags: {} };
+      this.registry.set('gameState', gameState);
     }
+    this.loadScene(gameState.currentScene || 'ch1_s1');
   }
 
   loadScene(sceneId, instant = false) {
