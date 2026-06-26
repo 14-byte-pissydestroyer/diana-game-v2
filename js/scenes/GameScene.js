@@ -39,7 +39,7 @@ class GameScene extends Phaser.Scene {
       this.loadScene(sceneId);
     });
 
-    this.time.delayedCall(120, () => {
+    this.time.delayedCall(500, () => {
       this.loadScene(initState.currentScene, true);
     });
   }
