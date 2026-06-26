@@ -370,7 +370,7 @@ class UIScene extends Phaser.Scene {
   // ─── Chapter title ────────────────────────────────────────────
   showChapterTitle(chKey) {
     const title = GAME_DATA.chapterTitles[chKey] || chKey;
-    const num = chKey.replace('ch', '');
+    const num = String(chKey).replace(/^ch/, '');
     this.chapterNum.setText(`── ГЛАВА ${num} ──`);
     this.chapterTitleText.setText(title);
     this.chapterOverlay.setAlpha(0);
