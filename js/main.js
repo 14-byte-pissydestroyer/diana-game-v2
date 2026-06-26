@@ -460,35 +460,11 @@ function loadGame() {
     return new GameState();
 }
 
-// Scene definitions (Placeholders for Phaser to compile, since we only need the file setup)
-class PreloadScene extends Phaser.Scene {
-    constructor() {
-        super('PreloadScene');
-    }
-    preload() { }
-    create() {
-        this.scene.start('GameScene');
-        this.scene.start('UIScene');
-    }
-}
-
-class GameScene extends Phaser.Scene {
-    constructor() {
-        super('GameScene');
-    }
-    create() { }
-}
-
-class UIScene extends Phaser.Scene {
-    constructor() {
-        super('UIScene');
-    }
-    create() { }
-}
-
-// Phaser config
+// Phaser config — scene classes defined in separate files loaded before this one
 const config = {
     type: Phaser.AUTO,
+    parent: 'game-container',
+    backgroundColor: '#0a0a12',
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -498,4 +474,4 @@ const config = {
     scene: [PreloadScene, GameScene, UIScene]
 };
 
-// const game = new Phaser.Game(config);
+const game = new Phaser.Game(config);
