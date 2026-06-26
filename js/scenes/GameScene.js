@@ -12,9 +12,9 @@ class GameScene extends Phaser.Scene {
 
     const saved = this._loadState();
     const initState = saved || {
-      currentScene: 'ch1_opening',
+      currentScene: 'ch1_s1',
       dialogueIndex: 0,
-      chapter: 'ch1',
+      chapter: null,        // null so ch1 title fires on first load
       inventory: [],
       flags: {},
       courage: 0,
@@ -63,9 +63,14 @@ class GameScene extends Phaser.Scene {
     const sceneData = GAME_DATA.scenes[sceneId];
     if (!sceneData) { console.warn('Unknown scene:', sceneId); return; }
 
-    const gameState = this.registry.get('gameState') || {};
-    gameState.currentScene = sceneId;
-    gameState.dialogueIndex = 0;
+    // Reset state when returning to the beginning
+    let gameState = this.registry.get('gameState') || {};
+    if (sceneId === 'ch1_s1') {
+      gameState = { currentScene: 'ch1_s1', dialogueIndex: 0, chapter: null, inventory: [], flags: {}, courage: 0, hp: 3, maxHp: 3 };
+    } else {
+      gameState.currentScene = sceneId;
+      gameState.dialogueIndex = 0;
+    }
     this.registry.set('gameState', gameState);
     this._saveState();
 

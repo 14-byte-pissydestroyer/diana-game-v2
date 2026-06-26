@@ -1,280 +1,203 @@
 class UIScene extends Phaser.Scene {
   constructor() {
     super({ key: 'UIScene' });
-    this.dialogueBox = null;
-    this.speakerText = null;
-    this.dialogueText = null;
-    this.hintText = null;
-    this.choiceContainer = null;
     this.isTyping = false;
     this.fullText = '';
     this.typewriterTimer = null;
     this.currentSceneData = null;
-    this.currentDialogueEntry = null;
+    this.hpIcons = [];
   }
 
   create() {
     const W = this.game.config.width;
     const H = this.game.config.height;
 
-    // === Dialogue Box (bottom 35%) ===
-    const boxH = H * 0.35;
-    const boxY = H - boxH / 2;
-    const boxPad = 12;
+    // ── Dialogue box (bottom 35%) ──────────────────────────────
+    const boxH = Math.floor(H * 0.35);
+    const boxY = H - boxH;
+    const pad = 14;
 
-    // Dialogue container (initially hidden)
-    this.dialogueContainer = this.add.container(0, 0);
-    this.dialogueContainer.setDepth(10);
+    this.dialogueContainer = this.add.container(0, 0).setDepth(10).setAlpha(0);
 
-    // Background
-    this.dialogueBg = this.add.rectangle(W / 2, boxY, W - 20, boxH, 0x1a0a2e, 0.88);
-    this.dialogueBg.setStrokeStyle(2, 0x9b59b6);
-    this.dialogueContainer.add(this.dialogueBg);
+    const dlgBg = this.add.rectangle(W / 2, boxY + boxH / 2, W - 16, boxH, 0x10071e, 0.91);
+    dlgBg.setStrokeStyle(2, 0x7b2fbe);
+    this.dialogueContainer.add(dlgBg);
 
-    // Speaker name background
-    this.speakerBg = this.add.rectangle(W / 2, H - boxH + 14, 140, 24, 0x9b59b6, 0.9);
-    this.speakerBg.setOrigin(0.5, 0.5);
+    // Speaker name plate
+    this.speakerBg = this.add.rectangle(pad + 60, boxY + 14, 130, 22, 0x7b2fbe, 0.95).setOrigin(0.5, 0.5);
     this.dialogueContainer.add(this.speakerBg);
 
-    // Speaker name text
-    this.speakerText = this.add.text(W / 2, H - boxH + 14, '', {
-      fontFamily: '"Press Start 2P", monospace',
-      fontSize: '10px',
-      color: '#ffffff',
-      align: 'center'
-    });
-    this.speakerText.setOrigin(0.5, 0.5);
+    this.speakerText = this.add.text(pad + 60, boxY + 14, '', {
+      fontFamily: '"Press Start 2P", monospace', fontSize: '9px', color: '#ffffff'
+    }).setOrigin(0.5, 0.5);
     this.dialogueContainer.add(this.speakerText);
 
-    // Dialogue text
-    this.dialogueText = this.add.text(boxPad + 8, H - boxH + 36, '', {
+    // Dialogue body
+    this.dialogueText = this.add.text(pad, boxY + 34, '', {
       fontFamily: '"Press Start 2P", monospace',
-      fontSize: '12px',
-      color: '#e0e0e0',
-      wordWrap: { width: W - 40 },
-      lineSpacing: 8
+      fontSize: '11px',
+      color: '#dde0ff',
+      wordWrap: { width: W - pad * 2 - 4 },
+      lineSpacing: 7
     });
     this.dialogueContainer.add(this.dialogueText);
 
-    // "Нажми" hint
-    this.hintText = this.add.text(W - boxPad - 12, H - 22, '▼ нажми', {
-      fontFamily: '"Press Start 2P", monospace',
-      fontSize: '8px',
-      color: '#9b59b6'
-    });
-    this.hintText.setOrigin(1, 1);
-    this.hintText.setAlpha(0);
+    // Advance hint
+    this.hintText = this.add.text(W - pad, H - 10, '▼', {
+      fontFamily: '"Press Start 2P", monospace', fontSize: '9px', color: '#9b59b6'
+    }).setOrigin(1, 1).setAlpha(0);
     this.dialogueContainer.add(this.hintText);
 
-    // Blinking hint animation
-    this.tweens.add({
-      targets: this.hintText,
-      alpha: { from: 0.4, to: 1 },
-      duration: 600,
-      yoyo: true,
-      repeat: -1,
-      pause: true
+    this.hintTween = this.tweens.add({
+      targets: this.hintText, alpha: { from: 0.3, to: 1 },
+      duration: 550, yoyo: true, repeat: -1, paused: true
     });
-    this.hintTween = this.tweens.getAllTweens().pop();
 
-    this.dialogueContainer.setAlpha(0);
+    // ── Choice buttons container ──────────────────────────────
+    this.choiceContainer = this.add.container(0, 0).setDepth(15).setAlpha(0);
 
-    // === Choice Buttons Container ===
-    this.choiceContainer = this.add.container(0, 0);
-    this.choiceContainer.setDepth(15);
-    this.choiceContainer.setAlpha(0);
+    // ── Top-left HP display ───────────────────────────────────
+    this.hpContainer = this.add.container(10, 10).setDepth(20);
 
-    // === HP / Hearts Display (top left) ===
-    this.hpContainer = this.add.container(12, 12);
-    this.hpContainer.setDepth(20);
-    this.hpIcons = [];
-
-    // === Inventory Button (top right) ===
-    this.inventoryBtn = this.add.container(W - 12, 12);
-    this.inventoryBtn.setDepth(20);
-
-    const invBg = this.add.rectangle(0, 0, 110, 28, 0x9b59b6, 0.85);
-    invBg.setOrigin(1, 0);
-    invBg.setStrokeStyle(1, 0xc084fc);
-    this.inventoryBtn.add(invBg);
-
-    this.inventoryText = this.add.text(-55, 14, '🎒 Инвентарь', {
-      fontFamily: '"Press Start 2P", monospace',
-      fontSize: '7px',
-      color: '#ffffff'
-    });
-    this.inventoryText.setOrigin(0.5, 0.5);
-    this.inventoryBtn.add(this.inventoryText);
-
+    // ── Top-right Inventory button ────────────────────────────
+    this.invBtn = this.add.container(W - 10, 10).setDepth(20);
+    const invBg = this.add.rectangle(0, 0, 108, 26, 0x7b2fbe, 0.88).setOrigin(1, 0).setStrokeStyle(1, 0xc084fc);
+    this.invLabel = this.add.text(-54, 13, '🎒 Предметы', {
+      fontFamily: '"Press Start 2P", monospace', fontSize: '7px', color: '#fff'
+    }).setOrigin(0.5, 0.5);
+    this.invBtn.add([invBg, this.invLabel]);
     invBg.setInteractive({ useHandCursor: true });
-    invBg.on('pointerdown', () => {
-      this.game.events.emit('toggle-inventory');
+    invBg.on('pointerdown', () => this._showInventory());
+    invBg.on('pointerover', () => invBg.setFillStyle(0x9b3aed, 1));
+    invBg.on('pointerout', () => invBg.setFillStyle(0x7b2fbe, 0.88));
+
+    // ── Chapter title overlay ─────────────────────────────────
+    this.chapterOverlay = this.add.container(W / 2, H / 2).setDepth(50).setAlpha(0);
+    this.chapterOverlay.add(this.add.rectangle(0, 0, W, H, 0x000000, 0.75));
+    this.chapterNum = this.add.text(0, -25, '', {
+      fontFamily: '"Press Start 2P", monospace', fontSize: '10px', color: '#9b59b6', align: 'center'
+    }).setOrigin(0.5, 0.5);
+    this.chapterTitleText = this.add.text(0, 15, '', {
+      fontFamily: '"Press Start 2P", monospace', fontSize: '14px', color: '#ffffff',
+      align: 'center', wordWrap: { width: W - 60 }
+    }).setOrigin(0.5, 0.5);
+    this.chapterOverlay.add([this.chapterNum, this.chapterTitleText]);
+
+    // ── Inventory modal (hidden) ──────────────────────────────
+    this.inventoryModal = this.add.container(W / 2, H / 2).setDepth(60).setAlpha(0);
+    const invModalBg = this.add.rectangle(0, 0, W - 30, H * 0.6, 0x10071e, 0.97).setStrokeStyle(2, 0x7b2fbe);
+    this.inventoryModal.add(invModalBg);
+    this.invItemsText = this.add.text(0, 0, '', {
+      fontFamily: '"Press Start 2P", monospace', fontSize: '9px', color: '#dde0ff',
+      align: 'center', wordWrap: { width: W - 70 }, lineSpacing: 10
+    }).setOrigin(0.5, 0.5);
+    this.inventoryModal.add(this.invItemsText);
+    const closeBtn = this.add.text(0, H * 0.25, '[ Закрыть ]', {
+      fontFamily: '"Press Start 2P", monospace', fontSize: '9px', color: '#9b59b6'
+    }).setOrigin(0.5, 0.5).setInteractive({ useHandCursor: true });
+    closeBtn.on('pointerdown', () => {
+      this.tweens.add({ targets: this.inventoryModal, alpha: 0, duration: 200 });
     });
+    this.inventoryModal.add(closeBtn);
 
-    // === Chapter Title Overlay ===
-    this.chapterOverlay = this.add.container(W / 2, H / 2);
-    this.chapterOverlay.setDepth(50);
-    this.chapterOverlay.setAlpha(0);
-
-    this.chapterBg = this.add.rectangle(0, 0, W, H, 0x000000, 0.7);
-    this.chapterOverlay.add(this.chapterBg);
-
-    this.chapterLabel = this.add.text(0, -20, '', {
-      fontFamily: '"Press Start 2P", monospace',
-      fontSize: '10px',
-      color: '#9b59b6',
-      align: 'center'
-    });
-    this.chapterLabel.setOrigin(0.5, 0.5);
-    this.chapterOverlay.add(this.chapterLabel);
-
-    this.chapterTitle = this.add.text(0, 15, '', {
-      fontFamily: '"Press Start 2P", monospace',
-      fontSize: '14px',
-      color: '#ffffff',
-      align: 'center',
-      wordWrap: { width: W - 60 }
-    });
-    this.chapterTitle.setOrigin(0.5, 0.5);
-    this.chapterOverlay.add(this.chapterTitle);
-
-    // === Click/Tap zone for advancing dialogue ===
-    this.input.on('pointerdown', (pointer) => {
-      // Ignore if pointer is on choice buttons or inventory
+    // ── Global tap/click to advance ───────────────────────────
+    this.input.on('pointerdown', (ptr) => {
+      if (this.inventoryModal.alpha > 0.5) return;
       if (this.choiceContainer.alpha > 0.5) return;
-      if (this.isPointerOverInventory(pointer)) return;
+      if (ptr.x > W - 120 && ptr.y < 45) return; // inventory button area
 
       if (this.isTyping) {
         this.skipTypewriter();
-      } else if (this.dialogueContainer.alpha > 0.5 && this.hintText.alpha > 0) {
+      } else if (this.dialogueContainer.alpha > 0.5 && !this.isTyping) {
         this.advanceDialogue();
       }
     });
 
-    // === Event Listeners ===
-    this.game.events.on('show-dialogue', (dialogueEntry, sceneData) => {
-      this.showDialogue(dialogueEntry, sceneData);
-    });
+    // ── Event bus ─────────────────────────────────────────────
+    this.game.events.on('show-dialogue', (entry, sceneData) => this.showDialogue(entry, sceneData));
+    this.game.events.on('show-choices', (choices, sceneId) => this.showChoices(choices, sceneId));
+    this.game.events.on('chapter-changed', (ch) => this.showChapterTitle(ch));
 
-    this.game.events.on('show-choices', (choices) => {
-      this.showChoices(choices);
-    });
-
-    this.game.events.on('advance-dialogue', () => {
-      this.advanceDialogue();
-    });
-
-    this.game.events.on('chapter-changed', (chapter) => {
-      this.showChapterTitle(chapter);
-    });
-
-    this.game.events.on('show-ending', (ending, sceneId) => {
-      this.showEnding(ending, sceneId);
-    });
-
-    this.game.events.on('update-hp', () => {
-      this.updateHP();
-    });
-
-    this.game.events.on('update-inventory', () => {
-      this.updateInventoryDisplay();
-    });
-
-    // Initial HP display
     this.updateHP();
   }
 
-  isPointerOverInventory(pointer) {
-    const W = this.game.config.width;
-    return pointer.x > W - 120 && pointer.y < 45;
+  // ─── Speaker colours ─────────────────────────────────────────
+  _speakerColor(name) {
+    const map = {
+      'Диана':           '#ff6b9d',
+      'Сева':            '#6bb5ff',
+      'Арсен Маркарян':  '#f4a460',
+      'Виктор Голик':    '#7fff7f',
+      'Свапна':          '#ffaadd',
+      'Джотаро Куджо':   '#88ccff',
+      'Дио':             '#ffd700',
+      'Тролль':          '#aaffaa',
+      'Шлюхидзе':        '#ff6688',
+      'Протитутидзе':    '#ff4466',
+      'Тёлкидзе':        '#cc88ff',
+      'Свиток':          '#cccccc',
+      '???':             '#aaaaaa'
+    };
+    return map[name] || '#c084fc';
   }
 
-  // ─────────── Dialogue System ───────────
-
-  showDialogue(dialogueEntry, sceneData) {
-    this.currentDialogueEntry = dialogueEntry;
+  // ─── Dialogue ────────────────────────────────────────────────
+  showDialogue(entry, sceneData) {
     this.currentSceneData = sceneData;
+    this._hideChoices();
 
-    // Hide choices if showing
-    this.hideChoices();
+    const isNarrator = entry.isNarrator;
+    const isThought  = entry.isThought;
+    const speaker    = entry.speaker || '';
 
-    // Set speaker
-    const speakerColors = {
-      'Диана': '#ff6b9d',
-      'Мама': '#ffaa44',
-      'Папа': '#44aaff',
-      'Бабушка': '#88cc88',
-      'Миша': '#44ddff',
-      'Кот': '#ffcc44',
-      'Учитель': '#cc88ff',
-      'Narrator': '#999999'
-    };
-
-    const speaker = dialogueEntry.speaker || '';
-    const isNarrator = dialogueEntry.isNarrator;
-    const isThought = dialogueEntry.isThought;
-
-    if (isNarrator) {
+    if (isNarrator || !speaker) {
       this.speakerBg.setAlpha(0);
       this.speakerText.setText('');
     } else {
-      this.speakerBg.setAlpha(0.9);
-      const color = speakerColors[speaker] || '#c084fc';
-      this.speakerText.setText(speaker);
-      this.speakerText.setColor(color);
+      this.speakerBg.setAlpha(0.95);
+      this.speakerText.setText(speaker).setColor(this._speakerColor(speaker));
     }
 
-    // Style text differently for thoughts
     if (isThought) {
       this.dialogueText.setColor('#aabbcc');
-      this.fullText = `« ${dialogueEntry.text} »`;
+      this.fullText = `« ${entry.text} »`;
+    } else if (isNarrator) {
+      this.dialogueText.setColor('#999ab8');
+      this.fullText = entry.text;
     } else {
-      this.dialogueText.setColor('#e0e0e0');
-      this.fullText = dialogueEntry.text;
+      this.dialogueText.setColor('#dde0ff');
+      this.fullText = entry.text;
     }
 
-    // Show dialogue box
     this.dialogueContainer.setAlpha(1);
     this.dialogueText.setText('');
     this.hintText.setAlpha(0);
     this.hintTween.pause();
-
-    // Start typewriter
     this.startTypewriter();
   }
 
   startTypewriter() {
     this.isTyping = true;
-    let charIndex = 0;
-    const speed = 35; // ms per character
-
-    if (this.typewriterTimer) {
-      this.typewriterTimer.remove();
-    }
-
+    let i = 0;
+    if (this.typewriterTimer) this.typewriterTimer.remove();
     this.typewriterTimer = this.time.addEvent({
-      delay: speed,
+      delay: 30,
+      repeat: this.fullText.length - 1,
       callback: () => {
-        charIndex++;
-        this.dialogueText.setText(this.fullText.substring(0, charIndex));
-
-        if (charIndex >= this.fullText.length) {
-          this.finishTypewriter();
-        }
-      },
-      repeat: this.fullText.length - 1
+        i++;
+        this.dialogueText.setText(this.fullText.substring(0, i));
+        if (i >= this.fullText.length) this._finishTypewriter();
+      }
     });
   }
 
   skipTypewriter() {
-    if (this.typewriterTimer) {
-      this.typewriterTimer.remove();
-    }
+    if (this.typewriterTimer) this.typewriterTimer.remove();
     this.dialogueText.setText(this.fullText);
-    this.finishTypewriter();
+    this._finishTypewriter();
   }
 
-  finishTypewriter() {
+  _finishTypewriter() {
     this.isTyping = false;
     this.hintText.setAlpha(0.5);
     this.hintTween.resume();
@@ -282,307 +205,179 @@ class UIScene extends Phaser.Scene {
 
   advanceDialogue() {
     if (!this.currentSceneData) return;
-
     const sceneData = this.currentSceneData;
     const gameState = this.registry.get('gameState') || {};
-    const dialogueIndex = (gameState.dialogueIndex || 0) + 1;
-
-    gameState.dialogueIndex = dialogueIndex;
+    const nextIdx = (gameState.dialogueIndex || 0) + 1;
+    gameState.dialogueIndex = nextIdx;
     this.registry.set('gameState', gameState);
 
-    // More dialogue in this scene?
-    if (sceneData.dialogue && dialogueIndex < sceneData.dialogue.length) {
-      this.showDialogue(sceneData.dialogue[dialogueIndex], sceneData);
+    if (sceneData.dialogue && nextIdx < sceneData.dialogue.length) {
+      this.showDialogue(sceneData.dialogue[nextIdx], sceneData);
       return;
     }
 
-    // Done with dialogue — show choices or advance
+    // Dialogue done
     this.dialogueContainer.setAlpha(0);
-    this.hintText.setAlpha(0);
 
     if (sceneData.choices && sceneData.choices.length > 0) {
-      this.showChoices(sceneData.choices);
-    } else if (sceneData.ending) {
-      this.game.events.emit('show-ending', sceneData.ending, sceneData.id);
+      // Special free-text for riddle 3
+      if (sceneData.id === 'ch4_riddle3') {
+        this._freeTextRiddle();
+        return;
+      }
+      this.showChoices(sceneData.choices, sceneData.id);
     } else if (sceneData.next) {
       this.game.events.emit('scene-changed', sceneData.next);
     }
   }
 
-  hideDialogue() {
-    this.dialogueContainer.setAlpha(0);
-    this.hintText.setAlpha(0);
+  _freeTextRiddle() {
+    const answer = prompt('Что для тебя Сева? (напиши своими словами)') || '';
+    // Save answer as flag
+    const gs = this.registry.get('gameState') || {};
+    gs.flags = gs.flags || {};
+    gs.flags.riddle3_answer = answer;
+    gs.flags.riddle3_correct = true;
+    this.registry.set('gameState', gs);
+    // Always pass — love has no wrong answer
+    this.game.events.emit('scene-changed', 'ch4_riddle3_pass');
   }
 
-  // ─────────── Choice System ───────────
-
-  showChoices(choices) {
-    this.hideDialogue();
+  // ─── Choices ─────────────────────────────────────────────────
+  showChoices(choices, sceneId) {
+    this.dialogueContainer.setAlpha(0);
     this.choiceContainer.removeAll(true);
 
     const W = this.game.config.width;
     const H = this.game.config.height;
-    const btnH = 48;
-    const gap = 10;
+    const btnH = 50;
+    const gap = 8;
     const totalH = choices.length * (btnH + gap) - gap;
-    const startY = H - 40 - totalH;
+    const startY = H - 30 - totalH;
 
-    choices.forEach((choice, index) => {
-      const y = startY + index * (btnH + gap);
-      const btn = this.createChoiceButton(choice, index, W, y, btnH);
+    choices.forEach((choice, i) => {
+      const y = startY + i * (btnH + gap) + btnH / 2;
+      const btn = this._makeChoiceBtn(choice, i, W, y, btnH);
       this.choiceContainer.add(btn);
     });
 
-    // Animate container in
     this.choiceContainer.setAlpha(1);
-    this.choiceContainer.setY(30);
-    this.tweens.add({
-      targets: this.choiceContainer,
-      y: 0,
-      duration: 400,
-      ease: 'Back.easeOut'
-    });
   }
 
-  createChoiceButton(choice, index, W, y, btnH) {
-    const container = this.add.container(W / 2, y);
+  _makeChoiceBtn(choice, index, W, y, btnH) {
+    const cont = this.add.container(W / 2, y);
 
-    const bg = this.add.rectangle(0, 0, W - 50, btnH, 0x6b21a8, 0.9);
-    bg.setStrokeStyle(2, 0xc084fc);
-    bg.setOrigin(0.5, 0.5);
-    bg.setInteractive({ useHandCursor: true });
-    container.add(bg);
+    // Gradient-like bg using two stacked rects
+    const bgOuter = this.add.rectangle(0, 0, W - 40, btnH, 0x3b0d6e, 0.95).setStrokeStyle(2, 0xc084fc);
+    const bgInner = this.add.rectangle(0, 0, W - 44, btnH - 4, 0x6b21a8, 0.7);
+    bgOuter.setInteractive({ useHandCursor: true });
 
-    // Hover effect
-    bg.on('pointerover', () => {
-      bg.setFillStyle(0x7c3aed, 1);
+    bgOuter.on('pointerover', () => { bgOuter.setFillStyle(0x7c3aed, 1); bgInner.setFillStyle(0x9b3aed, 0.9); });
+    bgOuter.on('pointerout', () => { bgOuter.setFillStyle(0x3b0d6e, 0.95); bgInner.setFillStyle(0x6b21a8, 0.7); });
+    bgOuter.on('pointerdown', () => {
+      this._applyEffects(choice.effects);
+      this._hideChoices();
+      if (choice.nextScene) this.game.events.emit('scene-changed', choice.nextScene);
     });
-    bg.on('pointerout', () => {
-      bg.setFillStyle(0x6b21a8, 0.9);
-    });
 
-    const emoji = choice.emoji || '';
-    const label = `${emoji}  ${choice.text}`;
-    const text = this.add.text(0, 0, label, {
+    const label = this.add.text(0, 0, `${choice.emoji || ''}  ${choice.text}`, {
       fontFamily: '"Press Start 2P", monospace',
-      fontSize: '11px',
+      fontSize: '10px',
       color: '#ffffff',
       align: 'center',
       wordWrap: { width: W - 80 }
-    });
-    text.setOrigin(0.5, 0.5);
-    container.add(text);
+    }).setOrigin(0.5, 0.5);
 
-    bg.on('pointerdown', () => {
-      // Apply effects
-      this.applyChoiceEffects(choice.effects);
-
-      // Hide choices
-      this.hideChoices();
-
-      // Emit choice event
-      this.game.events.emit('choice-made', index, choice);
-
-      // Go to next scene
-      if (choice.nextScene) {
-        this.game.events.emit('scene-changed', choice.nextScene);
-      }
-    });
+    cont.add([bgOuter, bgInner, label]);
 
     // Entrance animation
-    container.setAlpha(0);
-    container.setY(container.y + 20);
-    this.tweens.add({
-      targets: container,
-      alpha: 1,
-      y: container.y - 20,
-      duration: 300,
-      delay: index * 100,
-      ease: 'Power2'
-    });
+    cont.setAlpha(0).setY(cont.y + 20);
+    this.tweens.add({ targets: cont, alpha: 1, y: cont.y - 20, duration: 280, delay: index * 90, ease: 'Power2' });
 
-    return container;
+    return cont;
   }
 
-  hideChoices() {
+  _hideChoices() {
+    if (this.choiceContainer.alpha === 0) return;
     this.tweens.add({
-      targets: this.choiceContainer,
-      alpha: 0,
-      duration: 200,
-      onComplete: () => {
-        this.choiceContainer.removeAll(true);
-      }
+      targets: this.choiceContainer, alpha: 0, duration: 180,
+      onComplete: () => this.choiceContainer.removeAll(true)
     });
   }
 
-  applyChoiceEffects(effects) {
+  _applyEffects(effects) {
     if (!effects) return;
-    const gameState = this.registry.get('gameState') || {};
+    const gs = this.registry.get('gameState') || {};
+    gs.flags = gs.flags || {};
+    gs.inventory = gs.inventory || [];
 
-    if (effects.courage !== undefined) {
-      gameState.courage = (gameState.courage || 0) + effects.courage;
-    }
-    if (effects.hp !== undefined) {
-      gameState.hp = Math.min(gameState.maxHp || 100, (gameState.hp || 100) + effects.hp);
-    }
-    if (effects.item) {
-      if (!gameState.inventory) gameState.inventory = [];
-      if (!gameState.inventory.includes(effects.item)) {
-        gameState.inventory.push(effects.item);
-      }
-    }
+    if (effects.courage)  gs.courage = (gs.courage || 0) + effects.courage;
+    if (effects.hp)       gs.hp = Math.max(0, Math.min(gs.maxHp || 3, (gs.hp || 3) + effects.hp));
+    if (effects.addItem && !gs.inventory.includes(effects.addItem)) gs.inventory.push(effects.addItem);
+    if (effects.setFlag)  gs.flags[effects.setFlag] = true;
 
-    this.registry.set('gameState', gameState);
+    this.registry.set('gameState', gs);
+
+    // Persist
+    try { localStorage.setItem('diana-save', JSON.stringify(gs)); } catch (e) {}
+
     this.updateHP();
+    this._updateInvLabel();
   }
 
-  // ─────────── HP Display ───────────
-
+  // ─── HP display ──────────────────────────────────────────────
   updateHP() {
-    const gameState = this.registry.get('gameState') || {};
-    const hp = gameState.hp !== undefined ? gameState.hp : 100;
-    const maxHp = gameState.maxHp || 100;
-
-    // Clear old icons
-    this.hpIcons.forEach(icon => icon.destroy());
+    this.hpIcons.forEach(i => i.destroy());
     this.hpIcons = [];
+    const gs = this.registry.get('gameState') || {};
+    const hp = gs.hp !== undefined ? gs.hp : 3;
+    const maxHp = gs.maxHp || 3;
+    const courage = gs.courage || 0;
 
-    const maxHearts = 5;
-    const hearts = Math.ceil((hp / maxHp) * maxHearts);
-
-    // Label
-    const label = this.add.text(0, 0, '❤️', {
-      fontFamily: '"Press Start 2P", monospace',
-      fontSize: '10px',
-      color: '#ff4444'
-    });
-    this.hpContainer.add(label);
-    this.hpIcons.push(label);
-
-    for (let i = 0; i < maxHearts; i++) {
-      const heart = this.add.text(20 + i * 18, 0, i < hearts ? '♥' : '♡', {
-        fontFamily: '"Press Start 2P", monospace',
-        fontSize: '10px',
-        color: i < hearts ? '#ff4444' : '#666666'
+    for (let i = 0; i < maxHp; i++) {
+      const h = this.add.text(i * 18, 0, i < hp ? '❤️' : '🖤', {
+        fontFamily: '"Press Start 2P", monospace', fontSize: '11px'
       });
-      this.hpContainer.add(heart);
-      this.hpIcons.push(heart);
+      this.hpContainer.add(h);
+      this.hpIcons.push(h);
     }
 
-    // Courage display
-    const courage = gameState.courage || 0;
-    const courageText = this.add.text(0, 18, `⚡ ${courage}`, {
-      fontFamily: '"Press Start 2P", monospace',
-      fontSize: '8px',
-      color: '#ffcc44'
-    });
-    this.hpContainer.add(courageText);
-    this.hpIcons.push(courageText);
+    if (courage > 0) {
+      const c = this.add.text(0, 20, `⚡×${courage}`, {
+        fontFamily: '"Press Start 2P", monospace', fontSize: '8px', color: '#ffcc44'
+      });
+      this.hpContainer.add(c);
+      this.hpIcons.push(c);
+    }
   }
 
-  // ─────────── Inventory Display ───────────
-
-  updateInventoryDisplay() {
-    const gameState = this.registry.get('gameState') || {};
-    const count = (gameState.inventory || []).length;
-    this.inventoryText.setText(`🎒 Инвентарь (${count})`);
+  _updateInvLabel() {
+    const gs = this.registry.get('gameState') || {};
+    const n = (gs.inventory || []).length;
+    this.invLabel.setText(`🎒 Предметы${n > 0 ? ` (${n})` : ''}`);
   }
 
-  // ─────────── Chapter Title Overlay ───────────
+  _showInventory() {
+    const gs = this.registry.get('gameState') || {};
+    const inv = gs.inventory || [];
+    const lines = inv.length
+      ? ['── Инвентарь ──', '', ...inv.map(it => `• ${it}`)]
+      : ['── Пусто ──'];
+    this.invItemsText.setText(lines.join('\n'));
+    this.tweens.add({ targets: this.inventoryModal, alpha: 1, duration: 250 });
+  }
 
-  showChapterTitle(chapter) {
-    const title = GAME_DATA.chapterTitles[chapter] || `Глава ${chapter}`;
-
-    this.chapterLabel.setText(`— ГЛАВА ${chapter} —`);
-    this.chapterTitle.setText(title);
-
+  // ─── Chapter title ────────────────────────────────────────────
+  showChapterTitle(chKey) {
+    const title = GAME_DATA.chapterTitles[chKey] || chKey;
+    const num = chKey.replace('ch', '');
+    this.chapterNum.setText(`── ГЛАВА ${num} ──`);
+    this.chapterTitleText.setText(title);
     this.chapterOverlay.setAlpha(0);
     this.tweens.add({
-      targets: this.chapterOverlay,
-      alpha: 1,
-      duration: 800,
-      ease: 'Power2',
-      hold: 2000,
-      yoyo: true,
-      onComplete: () => {
-        this.chapterOverlay.setAlpha(0);
-      }
-    });
-  }
-
-  // ─────────── Ending Screen ───────────
-
-  showEnding(ending, sceneId) {
-    this.hideDialogue();
-    this.hideChoices();
-
-    const W = this.game.config.width;
-    const H = this.game.config.height;
-
-    const overlay = this.add.container(W / 2, H / 2);
-    overlay.setDepth(100);
-
-    const bg = this.add.rectangle(0, 0, W, H, 0x000000, 0.85);
-    overlay.add(bg);
-
-    const titleColors = { bad: '#ff4444', medium: '#ffaa44', best: '#44ff88' };
-    const endingType = ending.type || 'medium';
-
-    const title = this.add.text(0, -60, ending.title || 'Конец', {
-      fontFamily: '"Press Start 2P", monospace',
-      fontSize: '16px',
-      color: titleColors[endingType] || '#ffffff',
-      align: 'center'
-    });
-    title.setOrigin(0.5, 0.5);
-    overlay.add(title);
-
-    const desc = this.add.text(0, 10, ending.text || '', {
-      fontFamily: '"Press Start 2P", monospace',
-      fontSize: '10px',
-      color: '#cccccc',
-      align: 'center',
-      wordWrap: { width: W - 60 },
-      lineSpacing: 6
-    });
-    desc.setOrigin(0.5, 0.5);
-    overlay.add(desc);
-
-    // Restart button
-    const btnBg = this.add.rectangle(0, 100, 180, 40, 0x9b59b6, 0.9);
-    btnBg.setStrokeStyle(2, 0xc084fc);
-    btnBg.setInteractive({ useHandCursor: true });
-    overlay.add(btnBg);
-
-    const btnText = this.add.text(0, 100, '🔄 Заново', {
-      fontFamily: '"Press Start 2P", monospace',
-      fontSize: '10px',
-      color: '#ffffff'
-    });
-    btnText.setOrigin(0.5, 0.5);
-    overlay.add(btnText);
-
-    btnBg.on('pointerdown', () => {
-      this.registry.set('gameState', {
-        currentScene: 'scene_1_1',
-        dialogueIndex: 0,
-        chapter: 1,
-        inventory: [],
-        courage: 0,
-        hp: 100,
-        maxHp: 100
-      });
-      this.game.events.emit('scene-changed', 'scene_1_1');
-      overlay.destroy();
-    });
-
-    // Fade in
-    overlay.setAlpha(0);
-    this.tweens.add({
-      targets: overlay,
-      alpha: 1,
-      duration: 1000,
-      ease: 'Power2'
+      targets: this.chapterOverlay, alpha: 1, duration: 700, ease: 'Power2',
+      hold: 2200, yoyo: true,
+      onComplete: () => this.chapterOverlay.setAlpha(0)
     });
   }
 }
