@@ -174,7 +174,9 @@ class GameScene extends Phaser.Scene {
     const H = this.game.config.height;
 
     charArray.forEach((charId, index) => {
-      const key = 'char-' + charId;
+      const nameMap = { 'arsenius': 'arsen' };
+      const mappedId = nameMap[charId] || charId;
+      const key = 'char-' + mappedId;
       if (!this.textures.exists(key)) return;
       const total = charArray.length;
       const spacing = Math.min(140, W / (total + 1));

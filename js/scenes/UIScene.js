@@ -6,6 +6,7 @@ class UIScene extends Phaser.Scene {
     this.typewriterTimer = null;
     this.currentSceneData = null;
     this.hpIcons = [];
+    this.isChapterTitleShowing = false;
   }
 
   create() {
@@ -28,18 +29,20 @@ class UIScene extends Phaser.Scene {
     this.dialogueContainer.add(this.speakerBg);
 
     this.speakerText = this.add.text(pad + 60, boxY + 14, '', {
-      fontFamily: '"Press Start 2P", monospace', fontSize: '9px', color: '#ffffff'
+      fontFamily: '"Press Start 2P", monospace', fontSize: '10px', color: '#ffffff'
     }).setOrigin(0.5, 0.5);
+    this.speakerText.setShadow(1, 1, 'rgba(0,0,0,0.8)', 0);
     this.dialogueContainer.add(this.speakerText);
 
     // Dialogue body
     this.dialogueText = this.add.text(pad, boxY + 34, '', {
       fontFamily: '"Press Start 2P", monospace',
-      fontSize: '11px',
+      fontSize: '12px',
       color: '#dde0ff',
       wordWrap: { width: W - pad * 2 - 4 },
       lineSpacing: 7
     });
+    this.dialogueText.setShadow(1, 1, 'rgba(0,0,0,0.8)', 0);
     this.dialogueContainer.add(this.dialogueText);
 
     // Advance hint
@@ -77,10 +80,12 @@ class UIScene extends Phaser.Scene {
     this.chapterNum = this.add.text(0, -25, '', {
       fontFamily: '"Press Start 2P", monospace', fontSize: '10px', color: '#9b59b6', align: 'center'
     }).setOrigin(0.5, 0.5);
+    this.chapterNum.setShadow(1, 1, 'rgba(0,0,0,0.8)', 0);
     this.chapterTitleText = this.add.text(0, 15, '', {
-      fontFamily: '"Press Start 2P", monospace', fontSize: '14px', color: '#ffffff',
+      fontFamily: '"Press Start 2P", monospace', fontSize: '16px', color: '#ffffff',
       align: 'center', wordWrap: { width: W - 60 }
     }).setOrigin(0.5, 0.5);
+    this.chapterTitleText.setShadow(1, 1, 'rgba(0,0,0,0.8)', 0);
     this.chapterOverlay.add([this.chapterNum, this.chapterTitleText]);
 
     // ── Inventory modal (hidden) ──────────────────────────────
@@ -104,6 +109,7 @@ class UIScene extends Phaser.Scene {
     this.input.on('pointerdown', (ptr) => {
       if (this.inventoryModal.alpha > 0.5) return;
       if (this.choiceContainer.alpha > 0.5) return;
+      if (this.isChapterTitleShowing) return;
       if (ptr.x > W - 120 && ptr.y < 45) return; // inventory button area
 
       if (this.isTyping) {
@@ -247,6 +253,7 @@ class UIScene extends Phaser.Scene {
   showChoices(choices, sceneId) {
     this.dialogueContainer.setAlpha(0);
     this.choiceContainer.removeAll(true);
+    this.choiceContainer.ignoreInput = false;
 
     const W = this.game.config.width;
     const H = this.game.config.height;
@@ -255,38 +262,64 @@ class UIScene extends Phaser.Scene {
     const totalH = choices.length * (btnH + gap) - gap;
     const startY = H - 30 - totalH;
 
+    const isRiddle = choices.some(c => c.emoji === '✅' || c.emoji === '❌');
+
     choices.forEach((choice, i) => {
       const y = startY + i * (btnH + gap) + btnH / 2;
-      const btn = this._makeChoiceBtn(choice, i, W, y, btnH);
+      const btn = this._makeChoiceBtn(choice, i, W, y, btnH, isRiddle);
       this.choiceContainer.add(btn);
     });
 
     this.choiceContainer.setAlpha(1);
   }
 
-  _makeChoiceBtn(choice, index, W, y, btnH) {
+  _makeChoiceBtn(choice, index, W, y, btnH, isRiddle) {
     const cont = this.add.container(W / 2, y);
 
     // Gradient-like bg using two stacked rects
     const bgOuter = this.add.rectangle(0, 0, W - 40, btnH, 0x3b0d6e, 0.95).setStrokeStyle(2, 0xc084fc);
     const bgInner = this.add.rectangle(0, 0, W - 44, btnH - 4, 0x6b21a8, 0.7);
     bgOuter.setInteractive({ useHandCursor: true });
+    
+    const labelText = isRiddle ? choice.text : `${choice.emoji || ''}  ${choice.text}`;
 
-    bgOuter.on('pointerover', () => { bgOuter.setFillStyle(0x7c3aed, 1); bgInner.setFillStyle(0x9b3aed, 0.9); });
-    bgOuter.on('pointerout', () => { bgOuter.setFillStyle(0x3b0d6e, 0.95); bgInner.setFillStyle(0x6b21a8, 0.7); });
-    bgOuter.on('pointerdown', () => {
-      this._applyEffects(choice.effects);
-      this._hideChoices();
-      if (choice.nextScene) this.game.events.emit('scene-changed', choice.nextScene);
-    });
-
-    const label = this.add.text(0, 0, `${choice.emoji || ''}  ${choice.text}`, {
+    const label = this.add.text(0, 0, labelText, {
       fontFamily: '"Press Start 2P", monospace',
-      fontSize: '10px',
+      fontSize: '11px',
       color: '#ffffff',
       align: 'center',
       wordWrap: { width: W - 80 }
     }).setOrigin(0.5, 0.5);
+    label.setShadow(1, 1, 'rgba(0,0,0,0.8)', 0);
+    
+    if (isRiddle) {
+        cont.riddleEmoji = choice.emoji;
+        cont.label = label;
+    }
+
+    bgOuter.on('pointerover', () => { bgOuter.setFillStyle(0x7c3aed, 1); bgInner.setFillStyle(0x9b3aed, 0.9); });
+    bgOuter.on('pointerout', () => { bgOuter.setFillStyle(0x3b0d6e, 0.95); bgInner.setFillStyle(0x6b21a8, 0.7); });
+    bgOuter.on('pointerdown', () => {
+      if (this.choiceContainer.ignoreInput) return;
+      if (isRiddle) {
+          this.choiceContainer.ignoreInput = true;
+          this.choiceContainer.each(childCont => {
+              if (childCont.riddleEmoji && childCont.label) {
+                  childCont.label.setText(`${childCont.riddleEmoji}  ${childCont.label.text}`);
+              }
+          });
+          this.time.delayedCall(1500, () => {
+              this.choiceContainer.ignoreInput = false;
+              this._applyEffects(choice.effects);
+              this._hideChoices();
+              if (choice.nextScene) this.game.events.emit('scene-changed', choice.nextScene);
+          });
+      } else {
+          this._applyEffects(choice.effects);
+          this._hideChoices();
+          if (choice.nextScene) this.game.events.emit('scene-changed', choice.nextScene);
+      }
+    });
 
     cont.add([bgOuter, bgInner, label]);
 
@@ -374,10 +407,14 @@ class UIScene extends Phaser.Scene {
     this.chapterNum.setText(`── ГЛАВА ${num} ──`);
     this.chapterTitleText.setText(title);
     this.chapterOverlay.setAlpha(0);
+    this.isChapterTitleShowing = true;
     this.tweens.add({
       targets: this.chapterOverlay, alpha: 1, duration: 700, ease: 'Power2',
       hold: 2200, yoyo: true,
-      onComplete: () => this.chapterOverlay.setAlpha(0)
+      onComplete: () => {
+        this.chapterOverlay.setAlpha(0);
+        this.isChapterTitleShowing = false;
+      }
     });
   }
 }

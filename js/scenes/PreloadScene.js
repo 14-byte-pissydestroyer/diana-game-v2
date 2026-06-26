@@ -636,47 +636,247 @@ class PreloadScene extends Phaser.Scene {
 
     genCharacters() {
         const chars = [
-            { key: 'char-diana',   hair: '#2a0a0a', body: '#8844aa', skin: '#ffcc99', leg: '#332244' },
-            { key: 'char-seva',    hair: '#aaaaaa', body: '#446688', skin: '#eebb99', leg: '#334455' },
-            { key: 'char-arsen',   hair: '#1a1a1a', body: '#884444', skin: '#ddaa88', leg: '#442222' },
-            { key: 'char-viktor',  hair: '#3a2a1a', body: '#448844', skin: '#ffccaa', leg: '#224422' },
-            { key: 'char-swapna',  hair: '#1a0a2a', body: '#aa4488', skin: '#cc8866', leg: '#552244' },
-            { key: 'char-jotaro',  hair: '#111122', body: '#222244', skin: '#eebb99', leg: '#111133' },
-            { key: 'char-dio',     hair: '#ccaa00', body: '#884400', skin: '#ffcc99', leg: '#442200' },
-            { key: 'char-siren1',  hair: '#44aacc', body: '#226688', skin: '#aaddff', leg: '#114466' },
-            { key: 'char-siren2',  hair: '#44ccaa', body: '#228866', skin: '#88ffcc', leg: '#116644' },
-            { key: 'char-siren3',  hair: '#cc44aa', body: '#882266', skin: '#ffaadd', leg: '#661144' },
-            { key: 'char-troll',   hair: '#3a4a2a', body: '#556644', skin: '#88aa66', leg: '#445533' }
+            {
+                key: 'char-diana',
+                draw: (ctx) => {
+                    ctx.fillStyle = '#332244';
+                    ctx.fillRect(22, 70, 8, 26);
+                    ctx.fillRect(34, 70, 8, 26);
+                    ctx.fillStyle = '#ff6b9d';
+                    ctx.beginPath();
+                    ctx.moveTo(18, 38); ctx.lineTo(46, 38); ctx.lineTo(42, 70); ctx.lineTo(22, 70);
+                    ctx.fill();
+                    ctx.fillStyle = '#221133';
+                    ctx.fillRect(28, 45, 8, 25);
+                    ctx.fillRect(20, 65, 24, 5);
+                    ctx.fillStyle = '#ffcc99';
+                    ctx.beginPath(); ctx.arc(32, 26, 12, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#4488ff';
+                    ctx.beginPath(); ctx.arc(28, 24, 2, 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(36, 24, 2, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#2a0a0a';
+                    ctx.beginPath(); ctx.arc(32, 20, 14, Math.PI, 0); ctx.fill();
+                    ctx.fillRect(16, 26, 8, 30);
+                    ctx.fillRect(40, 26, 8, 30);
+                }
+            },
+            {
+                key: 'char-seva',
+                draw: (ctx) => {
+                    ctx.fillStyle = '#334455';
+                    ctx.fillRect(24, 70, 6, 26);
+                    ctx.fillRect(34, 70, 6, 26);
+                    ctx.fillStyle = '#446688';
+                    ctx.fillRect(20, 38, 24, 35);
+                    ctx.fillStyle = '#eebb99';
+                    ctx.beginPath(); ctx.arc(32, 24, 12, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#111';
+                    ctx.beginPath(); ctx.arc(28, 24, 2, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(36, 24, 2, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#aaaaaa';
+                    ctx.beginPath(); ctx.arc(32, 18, 12, Math.PI, 0); ctx.fill();
+                    ctx.fillRect(20, 18, 24, 4);
+                }
+            },
+            {
+                key: 'char-arsen',
+                draw: (ctx) => {
+                    ctx.fillStyle = '#3a4a2a';
+                    ctx.fillRect(15, 75, 12, 21);
+                    ctx.fillRect(37, 75, 12, 21);
+                    ctx.fillStyle = '#4a703a';
+                    ctx.beginPath(); ctx.ellipse(32, 55, 24, 22, 0, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#3a502a';
+                    ctx.fillRect(20, 60, 24, 15);
+                    ctx.fillStyle = '#d4a070';
+                    ctx.beginPath(); ctx.arc(32, 25, 15, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#111';
+                    ctx.beginPath(); ctx.arc(27, 22, 2, 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(37, 22, 2, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#4a2a1a';
+                    ctx.beginPath(); ctx.ellipse(32, 32, 10, 4, 0, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#4a2a1a';
+                    ctx.beginPath(); ctx.arc(32, 16, 14, Math.PI, 0); ctx.fill();
+                    ctx.fillRect(18, 16, 28, 6);
+                }
+            },
+            {
+                key: 'char-viktor',
+                draw: (ctx) => {
+                    ctx.fillStyle = '#111';
+                    ctx.fillRect(26, 75, 4, 21);
+                    ctx.fillRect(34, 75, 4, 21);
+                    ctx.fillStyle = '#222';
+                    ctx.beginPath(); ctx.moveTo(22, 35); ctx.lineTo(42, 35); ctx.lineTo(46, 80); ctx.lineTo(18, 80); ctx.fill();
+                    ctx.fillStyle = '#f0c0a0';
+                    ctx.beginPath(); ctx.arc(32, 24, 11, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#0f0';
+                    ctx.fillRect(24, 21, 6, 4);
+                    ctx.fillRect(34, 21, 6, 4);
+                    ctx.strokeStyle = '#0f0';
+                    ctx.beginPath(); ctx.moveTo(30, 23); ctx.lineTo(34, 23); ctx.stroke();
+                    ctx.fillStyle = '#8a2be2';
+                    ctx.beginPath();
+                    ctx.moveTo(20, 18); ctx.lineTo(24, 8); ctx.lineTo(28, 14); ctx.lineTo(32, 4);
+                    ctx.lineTo(36, 14); ctx.lineTo(40, 8); ctx.lineTo(44, 18);
+                    ctx.fill();
+                }
+            },
+            {
+                key: 'char-swapna',
+                draw: (ctx) => {
+                    ctx.fillStyle = '#cc8866';
+                    ctx.fillRect(26, 75, 4, 21);
+                    ctx.fillRect(34, 75, 4, 21);
+                    ctx.fillStyle = '#ff66aa';
+                    ctx.beginPath(); ctx.moveTo(20, 35); ctx.lineTo(44, 35); ctx.lineTo(40, 85); ctx.lineTo(24, 85); ctx.fill();
+                    ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 2;
+                    ctx.beginPath(); ctx.moveTo(20, 35); ctx.lineTo(40, 85); ctx.stroke();
+                    ctx.fillStyle = '#cc8866';
+                    ctx.beginPath(); ctx.arc(32, 24, 11, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#111';
+                    ctx.beginPath(); ctx.ellipse(28, 24, 2, 1, 0, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.ellipse(36, 24, 2, 1, 0, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#111';
+                    ctx.beginPath(); ctx.arc(32, 20, 12, Math.PI, 0); ctx.fill();
+                    ctx.fillRect(19, 20, 4, 40);
+                    ctx.fillRect(41, 20, 4, 40);
+                }
+            },
+            {
+                key: 'char-jotaro',
+                draw: (ctx) => {
+                    ctx.fillStyle = '#1a1a2e';
+                    ctx.fillRect(24, 70, 6, 26);
+                    ctx.fillRect(34, 70, 6, 26);
+                    ctx.fillStyle = '#1a1a2e';
+                    ctx.fillRect(18, 35, 28, 45);
+                    ctx.fillStyle = '#eee';
+                    ctx.fillRect(26, 35, 12, 25);
+                    ctx.fillStyle = '#ffd700';
+                    ctx.fillRect(22, 36, 6, 2);
+                    ctx.fillStyle = '#eebb99';
+                    ctx.beginPath(); ctx.arc(32, 22, 11, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#111';
+                    ctx.fillRect(27, 20, 3, 2);
+                    ctx.fillRect(34, 20, 3, 2);
+                    ctx.fillStyle = '#1a1a2e';
+                    ctx.fillRect(16, 10, 24, 4);
+                    ctx.fillRect(20, 2, 16, 10);
+                    ctx.fillStyle = '#111';
+                    ctx.fillRect(36, 10, 8, 14);
+                    ctx.beginPath(); ctx.moveTo(36, 24); ctx.lineTo(44, 24); ctx.lineTo(36, 18); ctx.fill();
+                }
+            },
+            {
+                key: 'char-dio',
+                draw: (ctx) => {
+                    ctx.fillStyle = '#ffaa00';
+                    ctx.fillRect(20, 70, 8, 26);
+                    ctx.fillRect(36, 70, 8, 26);
+                    ctx.fillStyle = '#aa0000';
+                    ctx.fillRect(16, 35, 32, 35);
+                    ctx.fillStyle = '#111';
+                    ctx.fillRect(24, 35, 16, 15);
+                    ctx.fillStyle = '#ffcc99';
+                    ctx.beginPath(); ctx.arc(32, 22, 12, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#ff0000';
+                    ctx.fillRect(26, 20, 3, 2);
+                    ctx.fillRect(35, 20, 3, 2);
+                    ctx.strokeStyle = '#111'; ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.moveTo(28, 28); ctx.lineTo(36, 26); ctx.stroke();
+                    ctx.fillStyle = '#ffd700';
+                    ctx.beginPath(); ctx.moveTo(32, 5); ctx.lineTo(14, 25); ctx.lineTo(20, 25); ctx.lineTo(12, 35); ctx.lineTo(24, 20); ctx.fill();
+                    ctx.beginPath(); ctx.moveTo(32, 5); ctx.lineTo(50, 25); ctx.lineTo(44, 25); ctx.lineTo(52, 35); ctx.lineTo(40, 20); ctx.fill();
+                    ctx.beginPath(); ctx.arc(32, 16, 13, Math.PI, 0); ctx.fill();
+                }
+            },
+            {
+                key: 'char-siren1',
+                draw: (ctx) => {
+                    ctx.fillStyle = '#ccaa99';
+                    ctx.fillRect(26, 65, 4, 31);
+                    ctx.fillRect(34, 65, 4, 31);
+                    ctx.fillStyle = '#ccaa99';
+                    ctx.beginPath(); ctx.arc(32, 45, 10, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#882244';
+                    ctx.fillRect(24, 38, 16, 8);
+                    ctx.fillRect(26, 60, 12, 8);
+                    ctx.fillStyle = '#ccaa99';
+                    ctx.beginPath(); ctx.arc(32, 25, 11, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#111';
+                    ctx.beginPath(); ctx.arc(28, 24, 2, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(36, 24, 2, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#ff66aa';
+                    ctx.beginPath(); ctx.arc(32, 20, 12, Math.PI, 0); ctx.fill();
+                    ctx.fillRect(20, 20, 6, 25);
+                    ctx.fillRect(38, 20, 6, 25);
+                }
+            },
+            {
+                key: 'char-siren2',
+                draw: (ctx) => {
+                    ctx.fillStyle = '#333';
+                    ctx.fillRect(24, 70, 6, 26);
+                    ctx.fillRect(34, 70, 6, 26);
+                    ctx.fillStyle = '#444';
+                    ctx.fillRect(22, 35, 20, 30);
+                    ctx.fillStyle = '#222';
+                    ctx.beginPath(); ctx.arc(22, 35, 6, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(42, 35, 6, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#eebb99';
+                    ctx.beginPath(); ctx.arc(32, 22, 11, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = '#111'; ctx.lineWidth = 2;
+                    ctx.beginPath(); ctx.moveTo(26, 20); ctx.lineTo(30, 22); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(38, 20); ctx.lineTo(34, 22); ctx.stroke();
+                    ctx.fillStyle = '#aa0000';
+                    ctx.beginPath(); ctx.arc(32, 18, 12, Math.PI, 0); ctx.fill();
+                }
+            },
+            {
+                key: 'char-siren3',
+                draw: (ctx) => {
+                    ctx.fillStyle = '#662288';
+                    ctx.beginPath(); ctx.moveTo(28, 30); ctx.lineTo(44, 96); ctx.lineTo(20, 96); ctx.fill();
+                    ctx.fillStyle = '#ccaa99';
+                    ctx.beginPath(); ctx.arc(32, 22, 11, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#ffd700';
+                    ctx.beginPath(); ctx.moveTo(22, 16); ctx.lineTo(26, 8); ctx.lineTo(32, 14); ctx.lineTo(38, 8); ctx.lineTo(42, 16); ctx.fill();
+                    ctx.fillStyle = '#111';
+                    ctx.beginPath(); ctx.arc(28, 22, 2, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(36, 22, 2, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#222';
+                    ctx.fillRect(20, 22, 4, 30);
+                    ctx.fillRect(40, 22, 4, 30);
+                }
+            },
+            {
+                key: 'char-troll',
+                draw: (ctx) => {
+                    ctx.fillStyle = '#3a4a2a';
+                    ctx.fillRect(15, 75, 12, 21);
+                    ctx.fillRect(37, 75, 12, 21);
+                    ctx.fillStyle = '#4a602a';
+                    ctx.beginPath(); ctx.ellipse(32, 50, 26, 30, 0, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#5a3a1a';
+                    ctx.fillRect(22, 65, 20, 15);
+                    ctx.fillStyle = '#4a602a';
+                    ctx.beginPath(); ctx.arc(32, 15, 16, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#ff0000';
+                    ctx.fillRect(24, 12, 4, 2);
+                    ctx.fillRect(36, 12, 4, 2);
+                    ctx.strokeStyle = '#111'; ctx.lineWidth = 2;
+                    ctx.beginPath(); ctx.moveTo(22, 10); ctx.lineTo(28, 12); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(42, 10); ctx.lineTo(36, 12); ctx.stroke();
+                    ctx.fillStyle = '#4a2a1a';
+                    ctx.beginPath(); ctx.moveTo(10, 40); ctx.lineTo(0, 10); ctx.lineTo(15, 5); ctx.lineTo(20, 40); ctx.fill();
+                }
+            }
         ];
 
         chars.forEach(c => {
             this.createCanvasTexture(c.key, 64, 96, (ctx) => {
-                // Legs
-                ctx.fillStyle = c.leg;
-                ctx.fillRect(20, 70, 10, 26);
-                ctx.fillRect(34, 70, 10, 26);
-
-                // Body
-                ctx.fillStyle = c.body;
-                ctx.fillRect(16, 38, 32, 35);
-
-                // Head
-                ctx.fillStyle = c.skin;
-                ctx.beginPath();
-                ctx.ellipse(32, 24, 14, 16, 0, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Hair
-                ctx.fillStyle = c.hair;
-                ctx.beginPath();
-                ctx.ellipse(32, 14, 16, 10, 0, Math.PI, Math.PI * 2);
-                ctx.fill();
-                ctx.fillRect(16, 8, 32, 10);
-
-                // Eyes
-                ctx.fillStyle = '#111111';
-                ctx.beginPath(); ctx.arc(26, 24, 2, 0, Math.PI * 2); ctx.fill();
-                ctx.beginPath(); ctx.arc(38, 24, 2, 0, Math.PI * 2); ctx.fill();
+                c.draw(ctx);
             });
         });
     }
