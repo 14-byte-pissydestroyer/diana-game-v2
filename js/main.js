@@ -1,546 +1,501 @@
-// js/main.js — Game config + ALL story data for "Путь Дианы"
-
-var GAME_DATA = {
-
-    // ── Chapter titles ──────────────────────────────────────
-    chapterTitles: {
-        ch1: 'Глава 1: Тревожный свиток',
-        ch2: 'Глава 2: Тёмный лес',
-        ch3: 'Глава 3: Башня Кода',
-        ch4: 'Глава 4: Мост и Стенд',
-        ch5: 'Глава 5: Замок Сирен',
-        ch6: 'Глава 6: Финал'
-    },
-
-    // ── Ending titles ───────────────────────────────────────
-    endingTitles: {
-        bad:    '💔 Плохая концовка — Осколки надежды',
-        medium: '🔥 Средняя концовка — Победа через бой',
-        best:   '💜 Лучшая концовка — Сикс Сэвен, навсегда'
-    },
-
-    // ── All scenes ──────────────────────────────────────────
+const GAME_DATA = {
     scenes: {
-
-        // ═══════════════════════════════════════════════════
-        // CHAPTER 1 — Тревожный свиток
-        // ═══════════════════════════════════════════════════
-
-        'ch1_opening': {
-            id: 'ch1_opening',
-            chapter: 'ch1',
+        'ch1_s1': {
+            id: 'ch1_s1',
             bg: 'cottage',
+            chapter: 1,
             characters: ['diana'],
             dialogue: [
-                { speaker: '', text: 'Тихий вечер в маленьком домике на краю леса. Свечи мерцают, за окном шумят деревья.', isNarrator: true },
-                { speaker: '', text: 'Ты — Диана, и сегодня что-то не так...', isNarrator: true },
-                { speaker: 'Диана', text: 'Что-то тревожное чувство... Как будто что-то случилось.', emotion: 'worried', isThought: true }
-            ],
-            next: 'ch1_scroll_appears'
-        },
-
-        'ch1_scroll_appears': {
-            id: 'ch1_scroll_appears',
-            chapter: 'ch1',
-            bg: 'cottage',
-            characters: ['diana'],
-            dialogue: [
-                { speaker: '', text: 'На столе вспыхивает магический свет. Появляется свиток.', isNarrator: true },
-                { speaker: 'Диана', text: 'Что это?! Свиток... От Севы!', emotion: 'surprised' },
-                { speaker: '', text: 'Диана открывает свиток. Текст частично повреждён:', isNarrator: true },
-                { speaker: 'Свиток', text: '«Диана... если ты это читаешь... меня увели... на север... замок... помог—»', emotion: 'corrupted' },
-                { speaker: '', text: 'Текст обрывается.', isNarrator: true }
+                {speaker: 'Рассказчик', text: 'Тихий вечер в маленьком домике на краю леса. Свечи мерцают, за окном шумят деревья.\nТы — Диана, и сегодня что-то не так...', isNarrator: true},
+                {speaker: 'Диана', text: '"Что-то тревожное чувство... Как будто что-то случилось."'},
+                {speaker: 'Рассказчик', text: 'Свиток магически появляется на столе со вспышкой.', isNarrator: true},
+                {speaker: 'Диана', text: '"Что это?! Свитка... От Севы!"'},
+                {speaker: 'Рассказчик', text: 'Она открывает его — текст частично поврежден:', isNarrator: true},
+                {speaker: 'Сева', text: '"Диана... если ты это читаешь... меня увели... на север... замок... помог—"\n(текст обрывается)'}
             ],
             choices: [
-                {
-                    text: '🗡️ Нужно идти немедленно!',
-                    emoji: '🗡️',
-                    nextScene: 'ch2_enter',
-                    effects: { courage: 1 }
-                },
-                {
-                    text: '📜 Подожди, попробую восстановить текст...',
-                    emoji: '📜',
-                    nextScene: 'ch2_enter',
-                    effects: { addItem: 'Подсказка о Сиренах', setFlag: 'restored_text' }
-                },
-                {
-                    text: '🏠 Может, соседи помогут?',
-                    emoji: '🏠',
-                    nextScene: 'ch2_enter',
-                    effects: { addItem: 'Зелье исцеления', setFlag: 'visited_neighbors' }
-                }
+                {text: '"Нужно идти немедленно!"', emoji: '🗡️', nextScene: 'ch2_s1', effects: {courage: 1}},
+                {text: '"Подожди, попробую восстановить текст..."', emoji: '📜', nextScene: 'ch1_s2'},
+                {text: '"Может, соседи помогут?"', emoji: '🏠', nextScene: 'ch1_s3'}
             ]
         },
-
-        // ═══════════════════════════════════════════════════
-        // CHAPTER 2 — Тёмный лес
-        // ═══════════════════════════════════════════════════
-
-        'ch2_enter': {
-            id: 'ch2_enter',
-            chapter: 'ch2',
-            bg: 'forest',
+        'ch1_s2': {
+            id: 'ch1_s2',
+            bg: 'cottage',
+            chapter: 1,
             characters: ['diana'],
             dialogue: [
-                { speaker: '', text: 'Тёмный лес окутывает тебя. Тропинка едва видна в свете луны.', isNarrator: true },
-                { speaker: '', text: 'Ветви скрипят, что-то шуршит в кустах...', isNarrator: true },
-                { speaker: 'Диана', text: 'Так темно... Но я должна идти дальше.', emotion: 'determined' }
+                {speaker: 'Диана', text: '"Сирены боятся чистой любви..." Понятно. Нужно торопиться!'}
             ],
-            next: 'ch2_arsenius_appears'
+            choices: [
+                {text: 'Отправиться в путь', emoji: '➡️', nextScene: 'ch2_s1', effects: {addItem: 'Подсказка о Сиренах'}}
+            ]
         },
-
-        'ch2_arsenius_appears': {
-            id: 'ch2_arsenius_appears',
-            chapter: 'ch2',
+        'ch1_s3': {
+            id: 'ch1_s3',
+            bg: 'cottage',
+            chapter: 1,
+            characters: ['diana'],
+            dialogue: [
+                {speaker: 'Сосед', text: '"Ох, Диана, держи зелье исцеления. Будь осторожна в лесу!"'}
+            ],
+            choices: [
+                {text: 'Отправиться в путь', emoji: '➡️', nextScene: 'ch2_s1', effects: {addItem: 'Зелье исцеления'}}
+            ]
+        },
+        'ch2_s1': {
+            id: 'ch2_s1',
             bg: 'forest',
+            chapter: 2,
+            characters: ['diana'],
+            dialogue: [
+                {speaker: 'Рассказчик', text: 'Тёмный лес окутывает тебя. Тропинка едва видна в свете луны.\nВетви скрипят, что-то шуршит в кустах...', isNarrator: true},
+                {speaker: 'Диана', text: '"Так темно... Но я должна идти дальше."'},
+                {speaker: 'Рассказчик', text: 'Звуки приближения чего-то большого. ОГРОМНАЯ фигура выходит из-за деревьев.', isNarrator: true}
+            ],
+            choices: [
+                {text: 'Продолжить', emoji: '➡️', nextScene: 'ch2_s2'}
+            ]
+        },
+        'ch2_s2': {
+            id: 'ch2_s2',
+            bg: 'forest',
+            chapter: 2,
             characters: ['diana', 'arsenius'],
             dialogue: [
-                { speaker: '', text: 'Из деревьев выходит ОГРОМНАЯ фигура. Доброе лицо, усы, широкая улыбка.', isNarrator: true },
-                { speaker: 'Арсен Маркарян', text: 'А, мелкая! Ты куда одна-то? В лесу одному нельзя...', emotion: 'friendly' },
-                { speaker: 'Арсен Маркарян', text: 'Ладно, не бойсь. Я — Арсенеус Макаряниус. Лесной барон.', emotion: 'proud' },
-                { speaker: 'Арсен Маркарян', text: 'А можно друге? Гы гы.', emotion: 'smirk' },
-                { speaker: 'Диана', text: 'Я ищу своего... друга. Его увели на север, к замку.', emotion: 'worried' },
-                { speaker: 'Арсен Маркарян', text: 'К Замку Сирен?! Хм-м-м... Я видел, как три женщины тащили какого-то парня туда. Высокий такой, да?', emotion: 'thinking' },
-                { speaker: 'Арсен Маркарян', text: 'Ох, мелкая, это опасно. Но я проводу тебя до развилки.', emotion: 'concerned' }
+                {speaker: 'Рассказчик', text: 'Появляется Арсенеус Макаряниус — массивный, с доброй улыбкой.', isNarrator: true},
+                {speaker: 'Арсенеус', text: '"А, мелкая! Ты куда одна-то? В лесу одному нельзя...\nЛадно, не бойсь. Я — Арсенеус Макаряниус. Лесной барон.\nА можно друге? Гы гы."'},
+                {speaker: 'Диана', text: '"Я ищу своего... друга. Его увели на север, к замку."'},
+                {speaker: 'Арсенеус', text: '"К Замку Сирен?! Хм-м-м... Я видел, как три женщины тащили какого-то парня туда. Высокий такой, да?\nОх, мелкая, это опасно. Но я проводу тебя до развилки."'}
             ],
             choices: [
-                {
-                    text: '🤝 Пойдём вместе, Арсенеус!',
-                    emoji: '🤝',
-                    nextScene: 'ch3_enter',
-                    effects: { addItem: 'Щит Барона', setFlag: 'arsenius_ally' }
-                },
-                {
-                    text: '⚡ Спасибо, но я пойду напрямик через чащу!',
-                    emoji: '⚡',
-                    nextScene: 'ch3_enter',
-                    effects: { courage: 1 }
-                },
-                {
-                    text: '💬 Расскажи подробнее о Сиренах.',
-                    emoji: '💬',
-                    nextScene: 'ch3_enter',
-                    effects: { addItem: 'Подсказка о Сиренах', setFlag: 'know_sirens' }
-                }
+                {text: '"Пойдём вместе, Арсенеус!"', emoji: '🤝', nextScene: 'ch3_s1', effects: {setFlag: 'arsenius_ally', addItem: 'Щит Барона'}},
+                {text: '"Спасибо, но я пойду напрямик через чащу!"', emoji: '⚡', nextScene: 'ch2_s3', effects: {courage: 1}},
+                {text: '"Расскажи подробнее о Сиренах."', emoji: '💬', nextScene: 'ch2_s4'}
             ]
         },
-
-        // ═══════════════════════════════════════════════════
-        // CHAPTER 3 — Башня Кода
-        // ═══════════════════════════════════════════════════
-
-        'ch3_enter': {
-            id: 'ch3_enter',
-            chapter: 'ch3',
-            bg: 'tower',
+        'ch2_s3': {
+            id: 'ch2_s3',
+            bg: 'forest',
+            chapter: 2,
             characters: ['diana'],
             dialogue: [
-                { speaker: '', text: 'Поляна расступается, и ты видишь... башню. Но не обычную.', isNarrator: true },
-                { speaker: '', text: 'Стены светятся рунами, похожими на... код? Экраны мерцают вместо окон.', isNarrator: true },
-                { speaker: 'Диана', text: 'Что за место...?', emotion: 'curious' },
-                { speaker: '', text: 'Изнутри раздаётся голос:', isNarrator: true },
-                { speaker: '???' , text: 'Ошибка в строке 42... Нет, стоп, это же рекурсия... Ой, подождите!' }
+                {speaker: 'Рассказчик', text: '(Мини-игра: уклонение от падающих веток - пропускаем для визуальной новеллы)', isNarrator: true}
             ],
-            next: 'ch3_meet_viktor'
+            choices: [
+                {text: 'Продолжить', emoji: '➡️', nextScene: 'ch3_s1'}
+            ]
         },
-
-        'ch3_meet_viktor': {
-            id: 'ch3_meet_viktor',
-            chapter: 'ch3',
+        'ch2_s4': {
+            id: 'ch2_s4',
+            bg: 'forest',
+            chapter: 2,
+            characters: ['diana', 'arsenius'],
+            dialogue: [
+                {speaker: 'Арсенеус', text: '"Сирены боятся слов, сказанных от сердца. Помни это!"'}
+            ],
+            choices: [
+                {text: 'Продолжить путь', emoji: '➡️', nextScene: 'ch3_s1', effects: {addItem: 'Подсказка о Сиренах'}}
+            ]
+        },
+        'ch3_s1': {
+            id: 'ch3_s1',
             bg: 'tower',
+            chapter: 3,
+            characters: ['diana'],
+            dialogue: [
+                {speaker: 'Рассказчик', text: 'Поляна расступается, и ты видишь... башню. Но не обычную.\nСтены светятся рунами, похожими на... код? Экраны мерцают вместо окон.', isNarrator: true},
+                {speaker: 'Диана', text: '"Что за место...?"'},
+                {speaker: 'Голос изнутри', text: '"Ошибка в строке 42... Нет, стоп, это же рекурсия... Ой, подождите!"'}
+            ],
+            choices: [
+                {text: 'Войти в башню', emoji: '🚪', nextScene: 'ch3_s2'}
+            ]
+        },
+        'ch3_s2': {
+            id: 'ch3_s2',
+            bg: 'tower',
+            chapter: 3,
             characters: ['diana', 'viktor', 'swapna'],
             dialogue: [
-                { speaker: '', text: 'Появляется Виктор Голик — худощавый, со светящейся клавиатурой-посохом.', isNarrator: true },
-                { speaker: 'Виктор Голик', text: 'О, Диана! Сева? Его увели? Я тут... ну, я магическую систему переписываю на новый стек.', emotion: 'excited' },
-                { speaker: 'Виктор Голик', text: 'Но могу помочь! У меня тут кое-что есть...', emotion: 'helpful' },
-                { speaker: '', text: 'Появляется Свапна — спокойная, с целебным сиянием.', isNarrator: true },
-                { speaker: 'Свапна', text: 'Диана, я дам тебе зелье исцеления. Тебе оно пригодится.', emotion: 'kind' },
-                { speaker: 'Свапна', text: 'И запомни: Сирены питаются сомнениями. Если ты уверена в себе — их магия бессильна.', emotion: 'wise' },
-                { speaker: 'Виктор Голик', text: 'А я могу дать тебе Хакерский Артефакт. Он нарушает магические барьеры. Ну, технически магия — это просто API...', emotion: 'nerdy' }
+                {speaker: 'Рассказчик', text: 'Появляется Виксториус Голик — стройный, со светящейся клавиатурой.', isNarrator: true},
+                {speaker: 'Виктор', text: '"О, Диана! Сева? Его увели? Я тут... ну, я магическую систему переписываю на новый стек.\nНо могу помочь! У меня тут кое-что есть..."'},
+                {speaker: 'Рассказчик', text: 'Появляется Свапна — спокойная, с аурой исцеления.', isNarrator: true},
+                {speaker: 'Свапна', text: '"Диана, я дам тебе зелье исцеления. Тебе оно пригодится.\nИ запомни: Сирены питаются сомнениями. Если ты уверена в себе — их магия бессильна."'},
+                {speaker: 'Виктор', text: '"А я могу дать тебе Хакерский Артефакт. Он нарушает магические барьеры. Ну, технически магия — это просто API..."'}
             ],
             choices: [
-                {
-                    text: '💻 Дай мне Артефакт!',
-                    emoji: '💻',
-                    nextScene: 'ch4_bridge',
-                    effects: { addItem: 'Хакерский Артефакт' }
-                },
-                {
-                    text: '🌸 Научи меня заклинанию защиты!',
-                    emoji: '🌸',
-                    nextScene: 'ch4_bridge',
-                    effects: { addItem: 'Заклинание защиты' }
-                },
-                {
-                    text: '🤷 Спасибо, но я должна идти!',
-                    emoji: '🤷',
-                    nextScene: 'ch4_bridge',
-                    effects: { courage: 1 }
-                }
+                {text: '"Дай мне Артефакт!"', emoji: '💻', nextScene: 'ch4_s1', effects: {addItem: 'Хакерский Артефакт'}},
+                {text: '"Научи меня заклинанию защиты!"', emoji: '🌸', nextScene: 'ch4_s1', effects: {addItem: 'Заклинание защиты'}},
+                {text: '"Спасибо, но я должна идти!"', emoji: '🤷', nextScene: 'ch4_s1', effects: {courage: 1}}
             ]
         },
-
-        // ═══════════════════════════════════════════════════
-        // CHAPTER 4 — Мост и Стенд
-        // ═══════════════════════════════════════════════════
-
-        'ch4_bridge': {
-            id: 'ch4_bridge',
-            chapter: 'ch4',
+        'ch4_s1': {
+            id: 'ch4_s1',
             bg: 'bridge',
-            characters: ['diana'],
+            chapter: 4,
+            characters: ['diana', 'troll'],
             dialogue: [
-                { speaker: '', text: 'Дорога к замку преграждена. Разрушенный мост над чёрной бездной.', isNarrator: true },
-                { speaker: '', text: 'На другой стороне — огромный тролль-стражник.', isNarrator: true },
-                { speaker: 'Тролль', text: 'Стой! Не пройдёшь без ответов! Три загадки — или назад!' }
-            ],
-            next: 'ch4_riddle1'
-        },
-
-        'ch4_riddle1': {
-            id: 'ch4_riddle1',
-            chapter: 'ch4',
-            bg: 'bridge',
-            characters: ['diana'],
-            dialogue: [
-                { speaker: 'Тролль', text: 'В каком городе родился тот, кого ты ищешь?' }
+                {speaker: 'Рассказчик', text: 'Дорога к замку преграждена. Разрушенный мост над чёрной бездной.\nНа другой стороне — огромный тролль-стражник.', isNarrator: true},
+                {speaker: 'Тролль', text: '"Стой! Не пройдёшь без ответов! Три загадки — или назад!"'},
+                {speaker: 'Тролль', text: '"В каком городе родился тот, кого ты ищешь?"'}
             ],
             choices: [
-                { text: 'Вроцлав', emoji: '🏙️', nextScene: 'ch4_riddle1_fail' },
-                { text: 'Майнц', emoji: '🏙️', nextScene: 'ch4_riddle1_fail' },
-                { text: 'Донецк', emoji: '🏙️', nextScene: 'ch4_riddle2', effects: { setFlag: 'riddle1_correct' } },
-                { text: 'Варшава', emoji: '🏙️', nextScene: 'ch4_riddle1_fail' }
+                {text: 'Вроцлав', emoji: '❌', nextScene: 'ch4_s1_f1'},
+                {text: 'Майнц', emoji: '❌', nextScene: 'ch4_s1_f1'},
+                {text: 'Донецк', emoji: '✅', nextScene: 'ch4_s2'},
+                {text: 'Варшава', emoji: '❌', nextScene: 'ch4_s1_f1'}
             ]
         },
-
-        'ch4_riddle1_fail': {
-            id: 'ch4_riddle1_fail',
-            chapter: 'ch4',
+        'ch4_s1_f1': {
+            id: 'ch4_s1_f1',
             bg: 'bridge',
-            characters: ['diana'],
+            chapter: 4,
+            characters: ['diana', 'troll'],
             dialogue: [
-                { speaker: 'Тролль', text: 'Ха! Не знаешь даже, откуда он? Попробуй ещё.' }
-            ],
-            next: 'ch4_riddle1'
-        },
-
-        'ch4_riddle2': {
-            id: 'ch4_riddle2',
-            chapter: 'ch4',
-            bg: 'bridge',
-            characters: ['diana'],
-            dialogue: [
-                { speaker: 'Тролль', text: 'Хм... Ладно, первое зачёт.' },
-                { speaker: 'Тролль', text: 'Второй вопрос! Реши уравнение: 4x + 16 = 44. Чему равен x?' }
+                {speaker: 'Тролль', text: '"Ха! Не знаешь даже, откуда он? Попробуй ещё."'}
             ],
             choices: [
-                { text: '5', emoji: '🔢', nextScene: 'ch4_riddle2_fail' },
-                { text: '7', emoji: '🔢', nextScene: 'ch4_riddle3', effects: { setFlag: 'riddle2_correct' } },
-                { text: '10', emoji: '🔢', nextScene: 'ch4_riddle2_fail' },
-                { text: '12', emoji: '🔢', nextScene: 'ch4_riddle2_fail' }
+                {text: 'Попробовать снова', emoji: '↩️', nextScene: 'ch4_s1'}
             ]
         },
-
-        'ch4_riddle2_fail': {
-            id: 'ch4_riddle2_fail',
-            chapter: 'ch4',
+        'ch4_s2': {
+            id: 'ch4_s2',
             bg: 'bridge',
-            characters: ['diana'],
+            chapter: 4,
+            characters: ['diana', 'troll'],
             dialogue: [
-                { speaker: 'Тролль', text: 'Думай лучше!' }
+                {speaker: 'Тролль', text: '"Хм... Ладно, первое зачёт."\n"Второй вопрос! Реши уравнение: 4x + 16 = 44. Чему равен x?"'}
             ],
-            next: 'ch4_riddle2'
-        },
-
-        'ch4_riddle3': {
-            id: 'ch4_riddle3',
-            chapter: 'ch4',
-            bg: 'bridge',
-            characters: ['diana'],
-            dialogue: [
-                { speaker: 'Тролль', text: 'Ха, неплохо для авантюристки.' },
-                { speaker: 'Тролль', text: 'Последний вопрос, путница. Самый важный.' },
-                { speaker: 'Тролль', text: 'Что для тебя Сева?' }
-            ],
-            // free text — any answer accepted
             choices: [
-                { text: 'Он — всё для меня', emoji: '💜', nextScene: 'ch4_riddle3_pass', effects: { setFlag: 'riddle3_correct' } },
-                { text: 'Лучший человек на свете', emoji: '💜', nextScene: 'ch4_riddle3_pass', effects: { setFlag: 'riddle3_correct' } },
-                { text: 'Моя любовь', emoji: '💜', nextScene: 'ch4_riddle3_pass', effects: { setFlag: 'riddle3_correct' } },
-                { text: 'Я просто хочу его спасти', emoji: '💜', nextScene: 'ch4_riddle3_pass', effects: { setFlag: 'riddle3_correct' } }
+                {text: '5', emoji: '❌', nextScene: 'ch4_s2_f2'},
+                {text: '7', emoji: '✅', nextScene: 'ch4_s3'},
+                {text: '10', emoji: '❌', nextScene: 'ch4_s2_f2'},
+                {text: '12', emoji: '❌', nextScene: 'ch4_s2_f2'}
             ]
         },
-
-        'ch4_riddle3_pass': {
-            id: 'ch4_riddle3_pass',
-            chapter: 'ch4',
+        'ch4_s2_f2': {
+            id: 'ch4_s2_f2',
             bg: 'bridge',
-            characters: ['diana'],
+            chapter: 4,
+            characters: ['diana', 'troll'],
             dialogue: [
-                { speaker: 'Тролль', text: 'Хммм... серьёзно? Ладно, вижу — ты отвечаешь сердцем. Проходи.' },
-                { speaker: '', text: 'Мост магическим образом восстанавливается. Диана переходит на другую сторону.', isNarrator: true }
+                {speaker: 'Тролль', text: '"Думай лучше!"'}
             ],
-            next: 'ch4_jotaro'
+            choices: [
+                {text: 'Попробовать снова', emoji: '↩️', nextScene: 'ch4_s2'}
+            ]
         },
-
-        'ch4_jotaro': {
-            id: 'ch4_jotaro',
-            chapter: 'ch4',
+        'ch4_s3': {
+            id: 'ch4_s3',
             bg: 'bridge',
+            chapter: 4,
+            characters: ['diana', 'troll'],
+            dialogue: [
+                {speaker: 'Тролль', text: '"Ха, неплохо для авантюристки."\n"Последний вопрос, путница. Самый важный.\nЧто для тебя Сева?"'}
+            ],
+            choices: [
+                {text: '(Ответить сердцем)', emoji: '💖', nextScene: 'ch4_s4'}
+            ]
+        },
+        'ch4_s4': {
+            id: 'ch4_s4',
+            bg: 'bridge',
+            chapter: 4,
+            characters: ['diana', 'troll'],
+            dialogue: [
+                {speaker: 'Тролль', text: '"Хммм... серьёзно? Ладно, вижу — ты отвечаешь сердцем. Проходи."'},
+                {speaker: 'Рассказчик', text: 'Мост магически восстанавливается. Диана переходит на другую сторону.', isNarrator: true}
+            ],
+            choices: [
+                {text: 'Перейти мост', emoji: '➡️', nextScene: 'ch4_s5'}
+            ]
+        },
+        'ch4_s5': {
+            id: 'ch4_s5',
+            bg: 'bridge',
+            chapter: 4,
             characters: ['diana', 'jotaro'],
             dialogue: [
-                { speaker: '', text: 'За мостом, прислонившись к мёртвому дереву, стоит фигура.', isNarrator: true },
-                { speaker: '', text: 'Высокий мужчина в школьной форме и шляпе. За ним мерцает призрачная синяя фигура — Стар Платинум.', isNarrator: true },
-                { speaker: 'Джотаро Куджо', text: 'Yare yare daze...', emotion: 'calm' },
-                { speaker: 'Джотаро Куджо', text: 'Ты тоже идёшь к замку? На Сирен?', emotion: 'serious' },
-                { speaker: 'Диана', text: 'Да! Они забрали моего...', emotion: 'determined' },
-                { speaker: 'Джотаро Куджо', text: 'Понял. Я тоже имею счёты кое с кем там.' },
-                { speaker: 'Джотаро Куджо', text: '...Дио. Он стоит за всем этим.' },
-                { speaker: 'Джотаро Куджо', text: 'Ладно. Идём вместе.' }
+                {speaker: 'Рассказчик', text: 'После перехода моста фигура опирается на мертвое дерево.\nВысокий мужчина в школьной форме и шляпе. Призрачная синяя фигура — Star Platinum — мерцает позади него.', isNarrator: true},
+                {speaker: 'Джотаро', text: '"Yare yare daze...\nТы тоже идёшь к замку? На Сирен?"'},
+                {speaker: 'Диана', text: '"Да! Они забрали моего..."'},
+                {speaker: 'Джотаро', text: '"Понял. Я тоже имею счёты кое с кем там.\n...Дио. Он стоит за всем этим.\nЛадно. Идём вместе."'}
             ],
             choices: [
-                {
-                    text: '⭐ Спасибо, Джотаро! Давай вместе!',
-                    emoji: '⭐',
-                    nextScene: 'ch5_enter',
-                    effects: { addItem: 'Звезда Платинума', setFlag: 'jotaro_ally' }
-                },
-                {
-                    text: '🤔 Кто такой Дио?',
-                    emoji: '🤔',
-                    nextScene: 'ch5_enter',
-                    effects: { setFlag: 'knows_dio' }
-                },
-                {
-                    text: '💪 Я справлюсь сама!',
-                    emoji: '💪',
-                    nextScene: 'ch5_enter',
-                    effects: { courage: 1 }
-                }
+                {text: '"Спасибо, Джотаро! Давай вместе!"', emoji: '⭐', nextScene: 'ch5_s1', effects: {setFlag: 'jotaro_ally', addItem: 'Звезда Платинума'}},
+                {text: '"Кто такой Дио?"', emoji: '🤔', nextScene: 'ch4_s6'},
+                {text: '"Я справлюсь сама!"', emoji: '💪', nextScene: 'ch5_s1', effects: {courage: 1}}
             ]
         },
-
-        // ═══════════════════════════════════════════════════
-        // CHAPTER 5 — Замок Сирен
-        // ═══════════════════════════════════════════════════
-
-        'ch5_enter': {
-            id: 'ch5_enter',
-            chapter: 'ch5',
+        'ch4_s6': {
+            id: 'ch4_s6',
+            bg: 'bridge',
+            chapter: 4,
+            characters: ['diana', 'jotaro'],
+            dialogue: [
+                {speaker: 'Джотаро', text: '"Дио — тёмный лорд, который контролирует Сирен из тени."'}
+            ],
+            choices: [
+                {text: 'Идти к замку', emoji: '➡️', nextScene: 'ch5_s1', effects: {setFlag: 'jotaro_ally', addItem: 'Звезда Платинума'}}
+            ]
+        },
+        'ch5_s1': {
+            id: 'ch5_s1',
             bg: 'castle',
+            chapter: 5,
             characters: ['diana'],
             dialogue: [
-                { speaker: '', text: 'Замок Сирен возвышается перед тобой. Чёрные шпили, фиолетовое свечение.', isNarrator: true },
-                { speaker: '', text: 'Внутри — красота и опасность. Зеркала отражают не то, что есть на самом деле.', isNarrator: true },
-                { speaker: 'Диана', text: 'Сева... Я иду.', emotion: 'determined' }
-            ],
-            next: 'ch5_sirens_appear'
-        },
-
-        'ch5_sirens_appear': {
-            id: 'ch5_sirens_appear',
-            chapter: 'ch5',
-            bg: 'throne',
-            characters: ['diana', 'siren1', 'siren2', 'siren3'],
-            dialogue: [
-                { speaker: '', text: 'Три Сирены появляются в тронном зале. Сева лежит на пьедестале, спящий, окружённый магическими цепями.', isNarrator: true },
-                { speaker: 'Шлюхидзе', text: 'О, какая милая гостья! Пришла забрать нашего пленника?', emotion: 'mocking' },
-                { speaker: 'Шлюхидзе', text: 'Он о тебе и не вспоминал... Здесь ему хорошо.', emotion: 'cruel' },
-                { speaker: 'Протитутидзе', text: 'Слабак! Ты не пройдёшь через нас!', emotion: 'angry' },
-                { speaker: 'Тёлкидзе', text: 'Время здесь работает по моим правилам. Ты уже опоздала.', emotion: 'cold' },
-                { speaker: 'Диана', text: 'Отпустите его! Это не ваше право!', emotion: 'angry' }
-            ],
-            next: 'ch5_dio_appears'
-        },
-
-        'ch5_dio_appears': {
-            id: 'ch5_dio_appears',
-            chapter: 'ch5',
-            bg: 'throne',
-            characters: ['diana', 'dio'],
-            dialogue: [
-                { speaker: '', text: 'Тёмная фигура материализуется за Сиренами. Блондин, мускулистый, со зловещей улыбкой.', isNarrator: true },
-                { speaker: 'Дио', text: 'Хо-хо... Ты пришла? Какая храбрая маленькая девочка.', emotion: 'arrogant' },
-                { speaker: 'Дио', text: 'Ты думаешь, ты можешь изменить судьбу? Невежественное дитя...', emotion: 'menacing' },
-                { speaker: 'Дио', text: 'Этот мир принадлежит МНЕ. И этот юноша — тоже.', emotion: 'possessive' },
-                { speaker: 'Диана', text: 'Нет! Сева — не твой!', emotion: 'defiant' },
-                { speaker: 'Дио', text: 'THE WORLD!', emotion: 'frozen' },
-                { speaker: '', text: 'Время замирает на мгновение.', isNarrator: true }
+                {speaker: 'Рассказчик', text: 'Замок Сирен возвышается перед тобой. Чёрные шпили, фиолетовое свечение.\nВнутри — красота и опасность. Зеркала отражают не то, что есть на самом деле.', isNarrator: true},
+                {speaker: 'Диана', text: '"Сева... Я иду."'}
             ],
             choices: [
-                {
-                    text: '💔 Может, Сирены правы... Может, ему здесь лучше...',
-                    emoji: '💔',
-                    nextScene: 'ending_bad'
-                },
-                {
-                    text: '🔥 Я буду сражаться!',
-                    emoji: '🔥',
-                    nextScene: 'ending_medium_1'
-                },
-                {
-                    text: '💬 СЕВА! СИКС СЭВЕН!',
-                    emoji: '💬',
-                    nextScene: 'ending_best'
-                }
+                {text: 'Войти в тронный зал', emoji: '🚪', nextScene: 'ch5_s2'}
             ]
         },
-
-        // ═══════════════════════════════════════════════════
-        // CHAPTER 6 — Финал
-        // ═══════════════════════════════════════════════════
-
-        // ── BAD ENDING ──
-        'ending_bad': {
-            id: 'ending_bad',
-            chapter: 'ch6',
-            ending: 'bad',
-            bg: 'castle',
+        'ch5_s2': {
+            id: 'ch5_s2',
+            bg: 'throne',
+            chapter: 5,
+            characters: ['diana', 'sirens', 'seva'],
+            dialogue: [
+                {speaker: 'Рассказчик', text: 'Три Сирены появляются в тронном зале. Сева на пьедестале, спит, окруженный магическими цепями.', isNarrator: true},
+                {speaker: 'Шлюхидзе', text: '"О, какая милая гостья! Пришла забрать нашего пленника?\nОн о тебе и не вспоминал... Здесь ему хорошо."'},
+                {speaker: 'Протитутидзе', text: '"Слабак! Ты не пройдёшь через нас!"'},
+                {speaker: 'Тёлкидзе', text: '"Время здесь работает по моим правилам. Ты уже опоздала."'},
+                {speaker: 'Диана', text: '"Отпустите его! Это не ваше право!"'}
+            ],
+            choices: [
+                {text: 'Продолжить', emoji: '➡️', nextScene: 'ch5_s3'}
+            ]
+        },
+        'ch5_s3': {
+            id: 'ch5_s3',
+            bg: 'throne',
+            chapter: 5,
+            characters: ['diana', 'dio', 'sirens', 'seva'],
+            dialogue: [
+                {speaker: 'Рассказчик', text: 'Тёмная фигура материализуется позади Сирен. Блондин, мускулистый, с угрожающей улыбкой.', isNarrator: true},
+                {speaker: 'Дио', text: '"Хо-хо... Ты пришла? Какая храбрая маленькая девочка.\nТы думаешь, ты можешь изменить судьбу? Невежественное дитя...\nЭтот мир принадлежит МНЕ. И этот юноша — тоже."'},
+                {speaker: 'Диана', text: '"Нет! Сева — не твой!"'},
+                {speaker: 'Дио', text: '"THE WORLD!" (время ненадолго останавливается)'}
+            ],
+            choices: [
+                {text: '"Может, Сирены правы... Может, ему здесь лучше..."', emoji: '💔', nextScene: 'end_bad'},
+                {text: '"Я буду сражаться!"', emoji: '🔥', nextScene: 'ch5_fight1'},
+                {text: '"Сева! Сикс сэвен!"', emoji: '💬', nextScene: 'end_best'}
+            ]
+        },
+        'ch5_fight1': {
+            id: 'ch5_fight1',
+            bg: 'throne',
+            chapter: 5,
+            characters: ['diana', 'shlyuhidze'],
+            dialogue: [
+                {speaker: 'Рассказчик', text: 'Раунд 1 vs Шлюхидзе\nИллюзия: Сева улыбается другому человеку.', isNarrator: true}
+            ],
+            choices: [
+                {text: 'Ударить', emoji: '👊', nextScene: 'end_bad'},
+                {text: 'Закрыть глаза и идти вперёд', emoji: '🙈', nextScene: 'ch5_fight2'}
+            ]
+        },
+        'ch5_fight2': {
+            id: 'ch5_fight2',
+            bg: 'throne',
+            chapter: 5,
+            characters: ['diana', 'protitutidze'],
+            dialogue: [
+                {speaker: 'Рассказчик', text: 'Раунд 2 vs Протитутидзе\nОна бросается на Диану!', isNarrator: true}
+            ],
+            choices: [
+                {text: 'Уклониться/Блокировать', emoji: '🛡️', nextScene: 'ch5_fight3'}
+            ]
+        },
+        'ch5_fight3': {
+            id: 'ch5_fight3',
+            bg: 'throne',
+            chapter: 5,
+            characters: ['diana', 'tyolkidze'],
+            dialogue: [
+                {speaker: 'Рассказчик', text: 'Раунд 3 vs Тёлкидзе\nОна использует атаку заморозки времени!', isNarrator: true}
+            ],
+            choices: [
+                {text: 'Сопротивляться', emoji: '⏳', nextScene: 'end_medium'}
+            ]
+        },
+        'end_bad': {
+            id: 'end_bad',
+            bg: 'dark',
+            chapter: 6,
             characters: ['diana'],
             dialogue: [
-                { speaker: '', text: 'Диана отвернулась. Сомнения заполнили её сердце.', isNarrator: true },
-                { speaker: '', text: 'Она покинула замок, но обещала себе — однажды она вернётся.', isNarrator: true },
-                { speaker: '', text: 'Но Диана поклялась: это ещё не конец...', isNarrator: true },
-                { speaker: '', text: 'Хочешь попробовать ещё раз?', isNarrator: true }
+                {speaker: 'Рассказчик', text: 'Диана отвернулась. Сомнения заполнили её сердце.\nОна покинула замок, но обещала себе — однажды она вернётся.', isNarrator: true},
+                {speaker: 'Рассказчик', text: '"Но Диана поклялась: это ещё не конец..."\n"Хочешь попробовать ещё раз?"', isNarrator: true}
             ],
             choices: [
-                { text: '🔄 Да, начать заново', emoji: '🔄', nextScene: 'ch1_opening' }
+                {text: 'Да', emoji: '🔄', nextScene: 'ch1_s1', effects: {reset: true}},
+                {text: 'Нет', emoji: '🚪', nextScene: 'title_screen'}
             ]
         },
-
-        // ── MEDIUM ENDING (combat) ──
-        'ending_medium_1': {
-            id: 'ending_medium_1',
-            chapter: 'ch6',
-            bg: 'throne',
-            characters: ['diana', 'siren1'],
+        'title_screen': {
+            id: 'title_screen',
+            bg: 'void',
+            chapter: 0,
+            characters: [],
             dialogue: [
-                { speaker: '', text: 'Диана принимает боевую стойку!', isNarrator: true },
-                { speaker: 'Шлюхидзе', text: 'Ха-ха... Посмотрим, как ты сражешься с иллюзиями!', emotion: 'mocking' },
-                { speaker: '', text: 'Перед глазами Дианы возникает иллюзия: Сева улыбается другому человеку...', isNarrator: true }
+                {speaker: 'Рассказчик', text: 'Путь Дианы', isNarrator: true}
             ],
-            choices: [
-                {
-                    text: '👁️ Закрыть глаза и идти вперёд',
-                    emoji: '👁️',
-                    nextScene: 'ending_medium_2',
-                    effects: { setFlag: 'broke_illusion' }
-                },
-                {
-                    text: '⚔️ Ударить!',
-                    emoji: '⚔️',
-                    nextScene: 'ending_medium_2'
-                }
-            ]
+            choices: []
         },
-
-        'ending_medium_2': {
-            id: 'ending_medium_2',
-            chapter: 'ch6',
-            bg: 'throne',
-            characters: ['diana', 'siren2'],
-            dialogue: [
-                { speaker: '', text: 'Иллюзии рассеиваются! Шлюхидзе отступает.', isNarrator: true },
-                { speaker: 'Протитутидзе', text: 'Ну ничего! А вот это отразишь?!', emotion: 'angry' },
-                { speaker: '', text: 'Протитутидзе бросается на Диану!', isNarrator: true }
-            ],
-            next: 'ending_medium_3'
-        },
-
-        'ending_medium_3': {
-            id: 'ending_medium_3',
-            chapter: 'ch6',
-            bg: 'throne',
-            characters: ['diana', 'siren3'],
-            dialogue: [
-                { speaker: 'Тёлкидзе', text: 'Время — моя стихия! Замри!', emotion: 'cold' },
-                { speaker: '', text: 'Время вокруг Дианы начинает замедляться...', isNarrator: true }
-            ],
-            next: 'ending_medium_win'
-        },
-
-        'ending_medium_win': {
-            id: 'ending_medium_win',
-            chapter: 'ch6',
-            ending: 'medium',
+        'end_medium': {
+            id: 'end_medium',
             bg: 'sunrise',
+            chapter: 6,
             characters: ['diana', 'seva'],
             dialogue: [
-                { speaker: '', text: 'Сирены побеждены, но Дио сбегает. Замок начинает рушиться!', isNarrator: true },
-                { speaker: '', text: 'Диана хватает спящего Севу. Они выбираются наружу, пока замок рассыпается.', isNarrator: true },
-                { speaker: '', text: 'Рассвет. Диана и Сева сидят на холме. Сева просыпается, но ещё затуманен.', isNarrator: true },
-                { speaker: 'Сева', text: 'Диана...? Где я...?', emotion: 'confused' },
-                { speaker: 'Сева', text: 'Ты... спасла меня?', emotion: 'touched' },
-                { speaker: 'Диана', text: 'Конечно, дурачок.', emotion: 'smiling' },
-                { speaker: '', text: '💜 Сделано с любовью, Севой для Дианы 💜', isNarrator: true }
+                {speaker: 'Рассказчик', text: 'Сирены побеждены, но Дио сбегает. Замок начинает рушиться.\nДиана хватает спящего Севу. Они спасаются, пока замок рушится.\nФинальная сцена: Диана и Сева сидят на холме, рассвет. Сева проснулся, но ослаблен.', isNarrator: true},
+                {speaker: 'Сева', text: '"Диана...? Где я...?\nТы... спасла меня?"'},
+                {speaker: 'Диана', text: '"Конечно, дурачок."'},
+                {speaker: 'Рассказчик', text: 'Они обнимаются.', isNarrator: true},
+                {speaker: 'Рассказчик', text: 'Сделано с любовью, Севой для Дианы 💜', isNarrator: true}
             ],
-            choices: [
-                { text: '🔄 Хочешь увидеть лучшую концовку?', emoji: '🔄', nextScene: 'ch1_opening' }
-            ]
+            choices: []
         },
-
-        // ── BEST ENDING ──
-        'ending_best': {
-            id: 'ending_best',
-            chapter: 'ch6',
-            bg: 'throne',
-            characters: ['diana', 'seva', 'jotaro', 'dio'],
-            dialogue: [
-                { speaker: 'Диана', text: 'СЕВА! СИКС СЭВЕН!', emotion: 'screaming' },
-                { speaker: '', text: 'Глаза Севы распахиваются. Магические цепи разлетаются в щепки!', isNarrator: true },
-                { speaker: 'Сева', text: 'Д... Диана?!', emotion: 'awake' },
-                { speaker: 'Сева', text: 'Сикс сэвен... Я помню...', emotion: 'emotional' },
-                { speaker: 'Дио', text: 'ЧТО?! Невозможно! Как ты—', emotion: 'shocked' },
-                { speaker: 'Джотаро Куджо', text: 'Yare yare daze. Твой номерок кончился, Дио.', emotion: 'cool' },
-                { speaker: 'Джотаро Куджо', text: 'STAR PLATINUM: THE WORLD!', emotion: 'shouting' },
-                { speaker: '', text: 'Время останавливается. Стар Платинум рассеивает тёмную магию Дио.', isNarrator: true },
-                { speaker: '', text: 'Сиpены теряют силу и обращаются в бегство. Дио побеждён.', isNarrator: true }
-            ],
-            next: 'ending_best_after'
-        },
-
-        'ending_best_after': {
-            id: 'ending_best_after',
-            chapter: 'ch6',
-            ending: 'best',
+        'end_best': {
+            id: 'end_best',
             bg: 'garden',
-            characters: ['diana', 'seva'],
+            chapter: 6,
+            characters: ['diana', 'seva', 'dio', 'jotaro'],
             dialogue: [
-                { speaker: '', text: 'Сева подходит к Диане. Замок превращается в прекрасный сад.', isNarrator: true },
-                { speaker: 'Сева', text: 'Ты пришла за мной... через всё это...', emotion: 'emotional' },
-                { speaker: 'Сева', text: 'А можно друге? Гы гы.', emotion: 'smiling' },
-                { speaker: 'Диана', text: '...Выйдэс?', emotion: 'teasing' },
-                { speaker: 'Сева', text: 'Выйдэс. Навсегда.', emotion: 'loving' },
-                { speaker: '', text: 'Они обнимаются. Магические искры повсюду.', isNarrator: true },
-                { speaker: '', text: '💜 Сделано с бесконечной любовью 💜', isNarrator: true },
-                { speaker: '', text: 'Сева → Диана', isNarrator: true },
-                { speaker: '', text: 'Сикс Сэвен, навсегда.', isNarrator: true },
-                { speaker: '', text: '───────────────', isNarrator: true },
-                { speaker: '', text: 'Джотаро уходит в закат.', isNarrator: true },
-                { speaker: 'Джотаро Куджо', text: 'Yare yare daze...', emotion: 'calm' },
-                { speaker: '', text: '[THE END]', isNarrator: true }
+                {speaker: 'Диана', text: '"СЕВА! СИКС СЭВЕН!"'},
+                {speaker: 'Рассказчик', text: 'Глаза Севы резко открываются. Магические цепи разбиваются вдребезги.', isNarrator: true},
+                {speaker: 'Сева', text: '"Д... Диана?!\nСикс сэвен... Я помню..."'},
+                {speaker: 'Дио', text: '"ЧТО?! Невозможно! Как ты—"'},
+                {speaker: 'Джотаро', text: '"Yare yare daze. Твой номерок кончился, Дио.\nSTAR PLATINUM: THE WORLD!"'},
+                {speaker: 'Рассказчик', text: 'Время останавливается. Star Platinum Джотаро разбивает тёмную магию Дио.\nСирены теряют силу и сбегают. Дио повержен.\nСева встает и подходит к Диане.', isNarrator: true},
+                {speaker: 'Сева', text: '"Ты пришла за мной... через всё это...\nА можно друге? Гы гы."'},
+                {speaker: 'Диана', text: '"...Выйдэс?"'},
+                {speaker: 'Сева', text: '"Выйдэс. Навсегда."'},
+                {speaker: 'Рассказчик', text: 'Они обнимаются. Всюду искрятся магические блестки. Замок превращается в прекрасный сад.', isNarrator: true},
+                {speaker: 'Рассказчик', text: 'Сделано с бесконечной любовью 💜\nСева → Диана\nСикс Сэвен, навсегда.', isNarrator: true},
+                {speaker: 'Джотаро', text: '"Yare yare daze..."'}
             ],
-            choices: [
-                { text: '🔄 Пройти ещё раз', emoji: '🔄', nextScene: 'ch1_opening' }
-            ]
+            choices: []
         }
+    },
+    chapterTitles: {
+        1: '🔮 Глава 1: Тревожное свитка',
+        2: '🌲 Глава 2: Тёмный лес',
+        3: '🏰 Глава 3: Башня Кода',
+        4: '⚔️ Глава 4: Мост и Стенд',
+        5: '🏰 Глава 5: Замок Сирен',
+        6: '🌟 Глава 6: Финал'
+    },
+    endings: {
+        bad: {title: '💔 Плохая концовка', subtitle: 'Сомнения победили'},
+        medium: {title: '🔥 Средняя концовка', subtitle: 'Спасен, но не до конца'},
+        best: {title: '💜 Лучшая концовка', subtitle: 'Сикс Сэвен, навсегда'}
     }
 };
 
-// ── Phaser game config ──────────────────────────────────
+class GameState {
+    constructor() {
+        this.currentScene = 'ch1_s1';
+        this.dialogueIndex = 0;
+        this.chapter = 1;
+        this.inventory = [];
+        this.courage = 0;
+        this.hp = 3;
+        this.maxHp = 3;
+        this.flags = {};
+    }
 
-var config = {
+    addItem(item) {
+        if (!this.inventory.includes(item)) {
+            this.inventory.push(item);
+        }
+    }
+
+    removeItem(item) {
+        const index = this.inventory.indexOf(item);
+        if (index > -1) {
+            this.inventory.splice(index, 1);
+        }
+    }
+
+    setFlag(flag) {
+        this.flags[flag] = true;
+    }
+
+    hasFlag(flag) {
+        return !!this.flags[flag];
+    }
+
+    addCourage(amount = 1) {
+        this.courage += amount;
+    }
+}
+
+// Helper functions for save/load to localStorage
+function saveGame(state) {
+    try {
+        localStorage.setItem('dianaGameSave', JSON.stringify(state));
+    } catch (e) {
+        console.error('Failed to save game state', e);
+    }
+}
+
+function loadGame() {
+    try {
+        const saved = localStorage.getItem('dianaGameSave');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            const state = new GameState();
+            Object.assign(state, parsed);
+            return state;
+        }
+    } catch (e) {
+        console.error('Failed to load game state', e);
+    }
+    return new GameState();
+}
+
+// Scene definitions (Placeholders for Phaser to compile, since we only need the file setup)
+class PreloadScene extends Phaser.Scene {
+    constructor() {
+        super('PreloadScene');
+    }
+    preload() { }
+    create() {
+        this.scene.start('GameScene');
+        this.scene.start('UIScene');
+    }
+}
+
+class GameScene extends Phaser.Scene {
+    constructor() {
+        super('GameScene');
+    }
+    create() { }
+}
+
+class UIScene extends Phaser.Scene {
+    constructor() {
+        super('UIScene');
+    }
+    create() { }
+}
+
+// Phaser config
+const config = {
     type: Phaser.AUTO,
-    parent: 'game-container',
-    width: 480,
-    height: 800,
-    backgroundColor: '#0a0a12',
     scale: {
         mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: 480,
+        height: 800
     },
     scene: [PreloadScene, GameScene, UIScene]
 };
 
-var game = new Phaser.Game(config);
+// const game = new Phaser.Game(config);
